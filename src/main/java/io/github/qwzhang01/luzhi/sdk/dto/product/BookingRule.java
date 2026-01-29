@@ -11,45 +11,126 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class BookingRule {
 
     /**
-     * 规则ID
+     * 预订规则ID
      */
+    private Long bookingRuleId;
+
+    /**
+     * 预订确认类型：
+     * <ul>
+     *   <li>0: 默认(无配置)</li>
+     *   <li>1: 即时确认(保留房)</li>
+     *   <li>2: 待查</li>
+     *   <li>3: 限时确认</li>
+     * </ul>
+     */
+    private Integer bookingConfirmType;
+
+    /**
+     * 最少预定房间数量；0表示无限制
+     */
+    private Integer minAmount;
+
+    /**
+     * 最大预定房间数量；0表示无限制
+     */
+    private Integer maxAmount;
+
+    /**
+     * 最少入住天数；0表示无限制
+     */
+    private Integer minDays;
+
+    /**
+     * 最大入住天数；0表示无限制
+     */
+    private Integer maxDays;
+
+    /**
+     * 最少提前预订时间(以用户选择的入住日期的23:59:59计算)；0表示无限制
+     */
+    private Integer minAdvHours;
+
+    /**
+     * 最大提前预定时间(以用户选择的入住日期的23:59:59计算)；0表示无限制
+     */
+    private Integer maxAdvHours;
+
+    // 兼容性字段
     private String id;
-
-    /**
-     * 规则名称
-     */
     private String name;
-
-    /**
-     * 最小入住天数
-     */
     private Integer minNights;
-
-    /**
-     * 最大入住天数
-     */
     private Integer maxNights;
-
-    /**
-     * 最小提前预订天数
-     */
     private Integer minAdvanceDays;
-
-    /**
-     * 最大提前预订天数
-     */
     private Integer maxAdvanceDays;
-
-    /**
-     * 最小间数
-     */
     private Integer minRooms;
-
-    /**
-     * 最大间数
-     */
     private Integer maxRooms;
 
+    public Long getBookingRuleId() {
+        return bookingRuleId;
+    }
+
+    public void setBookingRuleId(Long bookingRuleId) {
+        this.bookingRuleId = bookingRuleId;
+    }
+
+    public Integer getBookingConfirmType() {
+        return bookingConfirmType;
+    }
+
+    public void setBookingConfirmType(Integer bookingConfirmType) {
+        this.bookingConfirmType = bookingConfirmType;
+    }
+
+    public Integer getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(Integer minAmount) {
+        this.minAmount = minAmount;
+    }
+
+    public Integer getMaxAmount() {
+        return maxAmount;
+    }
+
+    public void setMaxAmount(Integer maxAmount) {
+        this.maxAmount = maxAmount;
+    }
+
+    public Integer getMinDays() {
+        return minDays;
+    }
+
+    public void setMinDays(Integer minDays) {
+        this.minDays = minDays;
+    }
+
+    public Integer getMaxDays() {
+        return maxDays;
+    }
+
+    public void setMaxDays(Integer maxDays) {
+        this.maxDays = maxDays;
+    }
+
+    public Integer getMinAdvHours() {
+        return minAdvHours;
+    }
+
+    public void setMinAdvHours(Integer minAdvHours) {
+        this.minAdvHours = minAdvHours;
+    }
+
+    public Integer getMaxAdvHours() {
+        return maxAdvHours;
+    }
+
+    public void setMaxAdvHours(Integer maxAdvHours) {
+        this.maxAdvHours = maxAdvHours;
+    }
+
+    // 兼容性方法
     public String getId() {
         return id;
     }

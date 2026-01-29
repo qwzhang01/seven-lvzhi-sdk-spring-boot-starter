@@ -28,6 +28,26 @@ public class ProductInfo {
     private Long roomTypeId;
 
     /**
+     * 价格方案ID
+     */
+    private Long ratePlanId;
+
+    /**
+     * 取消规则ID
+     */
+    private Long cancelRuleId;
+
+    /**
+     * 预订规则ID
+     */
+    private Long bookingRuleId;
+
+    /**
+     * 产品原始ID
+     */
+    private String productOriginalId;
+
+    /**
      * 产品类型：
      * <ul>
      *   <li>0: 正常</li>
@@ -40,6 +60,53 @@ public class ProductInfo {
      * 销售类型
      */
     private Integer saleType;
+
+    /**
+     * 餐食类型：
+     * <ul>
+     *   <li>0: 未知</li>
+     *   <li>1: 早餐</li>
+     *   <li>2: 午餐</li>
+     *   <li>3: 晚餐</li>
+     * </ul>
+     */
+    private Integer mealType;
+
+    /**
+     * 餐食份数
+     */
+    private Integer mealCount;
+
+    /**
+     * 支付类型：
+     * <ul>
+     *   <li>0: 未知</li>
+     *   <li>1: 现付</li>
+     *   <li>2: 预付</li>
+     *   <li>3: 信用住</li>
+     * </ul>
+     */
+    private Integer paymentType;
+
+    /**
+     * 取消类型：
+     * <ul>
+     *   <li>0: 免费取消</li>
+     *   <li>1: 限时取消</li>
+     *   <li>2: 不可取消</li>
+     * </ul>
+     */
+    private Integer cancelType;
+
+    /**
+     * 库存类型：
+     * <ul>
+     *   <li>0: 房型库存（默认）</li>
+     *   <li>1: 产品库存（全渠道共享）</li>
+     *   <li>2: 产品渠道独享库存</li>
+     * </ul>
+     */
+    private Integer stockType;
 
     /**
      * 产品名称
@@ -227,6 +294,16 @@ public class ProductInfo {
      * 产品扩展信息
      */
     private String extraInfo;
+
+    /**
+     * 产品担保信息
+     */
+    private ProductGuarantee productGuarantee;
+
+    /**
+     * 产品促销信息
+     */
+    private ProductPromotion productPromotions;
 
     /**
      * 是否开通会员：
@@ -639,6 +716,95 @@ public class ProductInfo {
 
     public void setConvertPriceCalendars(List<SamplePriceCalendar> convertPriceCalendars) {
         this.convertPriceCalendars = convertPriceCalendars;
+    }
+
+    // 新添加字段的getter和setter方法
+    public Long getRatePlanId() {
+        return ratePlanId;
+    }
+
+    public void setRatePlanId(Long ratePlanId) {
+        this.ratePlanId = ratePlanId;
+    }
+
+    public Long getCancelRuleId() {
+        return cancelRuleId;
+    }
+
+    public void setCancelRuleId(Long cancelRuleId) {
+        this.cancelRuleId = cancelRuleId;
+    }
+
+    public Long getBookingRuleId() {
+        return bookingRuleId;
+    }
+
+    public void setBookingRuleId(Long bookingRuleId) {
+        this.bookingRuleId = bookingRuleId;
+    }
+
+    public String getProductOriginalId() {
+        return productOriginalId;
+    }
+
+    public void setProductOriginalId(String productOriginalId) {
+        this.productOriginalId = productOriginalId;
+    }
+
+    public Integer getMealType() {
+        return mealType;
+    }
+
+    public void setMealType(Integer mealType) {
+        this.mealType = mealType;
+    }
+
+    public Integer getMealCount() {
+        return mealCount;
+    }
+
+    public void setMealCount(Integer mealCount) {
+        this.mealCount = mealCount;
+    }
+
+    public Integer getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(Integer paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public Integer getCancelType() {
+        return cancelType;
+    }
+
+    public void setCancelType(Integer cancelType) {
+        this.cancelType = cancelType;
+    }
+
+    public Integer getStockType() {
+        return stockType;
+    }
+
+    public void setStockType(Integer stockType) {
+        this.stockType = stockType;
+    }
+
+    public ProductGuarantee getProductGuarantee() {
+        return productGuarantee;
+    }
+
+    public void setProductGuarantee(ProductGuarantee productGuarantee) {
+        this.productGuarantee = productGuarantee;
+    }
+
+    public ProductPromotion getProductPromotions() {
+        return productPromotions;
+    }
+
+    public void setProductPromotions(ProductPromotion productPromotions) {
+        this.productPromotions = productPromotions;
     }
 
     // 别名方法（保持兼容性）

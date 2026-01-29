@@ -5,10 +5,7 @@ import io.github.qwzhang01.luzhi.sdk.client.LvzhiDrpClient;
 import io.github.qwzhang01.luzhi.sdk.common.ApiMethod;
 import io.github.qwzhang01.luzhi.sdk.common.BaseResponse;
 import io.github.qwzhang01.luzhi.sdk.common.PageData;
-import io.github.qwzhang01.luzhi.sdk.dto.product.GetProductByIdRequest;
-import io.github.qwzhang01.luzhi.sdk.dto.product.ListProductRequest;
-import io.github.qwzhang01.luzhi.sdk.dto.product.ProductDetail;
-import io.github.qwzhang01.luzhi.sdk.dto.product.ProductInfo;
+import io.github.qwzhang01.luzhi.sdk.dto.product.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +33,7 @@ public class ProductService {
      * @param hotelVid 酒店VID（必填）
      * @return 产品列表
      */
-    public BaseResponse<ProductInfo> list(Long hotelVid) {
+    public BaseResponse<ProductListResponse> list(Long hotelVid) {
         logger.debug("查询产品列表, hotelVid: {}", hotelVid);
 
         ListProductRequest request = new ListProductRequest();
@@ -45,7 +42,7 @@ public class ProductService {
         return client.execute(
                 ApiMethod.PRODUCT_LIST,
                 request,
-                new TypeReference<BaseResponse<ProductInfo>>() {
+                new TypeReference<BaseResponse<ProductListResponse>>() {
                 }
         );
     }

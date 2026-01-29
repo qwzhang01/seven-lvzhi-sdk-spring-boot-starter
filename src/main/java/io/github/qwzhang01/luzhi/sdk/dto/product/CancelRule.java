@@ -11,35 +11,118 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class CancelRule {
 
     /**
-     * 规则ID
+     * 取消规则ID
      */
-    private String id;
+    private Long cancelRuleId;
 
     /**
-     * 规则名称
-     */
-    private String name;
-
-    /**
-     * 规则描述
-     */
-    private String description;
-
-    /**
-     * 是否可取消：0否 1是
-     */
-    private Integer cancelable;
-
-    /**
-     * 取消类型：0不可取消 1免费取消 2阶梯取消
+     * 取消类型：
+     * <ul>
+     *   <li>0: 免费取消</li>
+     *   <li>1: 限时取消</li>
+     *   <li>2: 不可取消</li>
+     * </ul>
      */
     private Integer cancelType;
 
     /**
-     * 免费取消截止时间（如：入住日18:00前）
+     * 取消时间类型：
+     * <ul>
+     *   <li>0: 时间 (cancelDaysAgo + cancelTimeAgo)</li>
+     *   <li>1: 小时 (cancelHoursAgo)</li>
+     * </ul>
      */
+    private Integer cancelTimeType;
+
+    /**
+     * N天前
+     */
+    private Integer cancelDaysAgo;
+
+    /**
+     * N点前 eg:18:30
+     */
+    private String cancelTimeAgo;
+
+    /**
+     * 入住前n小时 (入住当天24:00往前推N小时)
+     */
+    private Integer cancelHoursAgo;
+
+    /**
+     * 扣费的类型：
+     * <ul>
+     *   <li>0: 默认(不扣费)</li>
+     *   <li>1: 首晚</li>
+     *   <li>2: 全额</li>
+     * </ul>
+     */
+    private Integer deductionType;
+
+    // 兼容性字段
+    private String id;
+    private String name;
+    private String description;
+    private Integer cancelable;
     private String freeCancelDeadline;
 
+    public Long getCancelRuleId() {
+        return cancelRuleId;
+    }
+
+    public void setCancelRuleId(Long cancelRuleId) {
+        this.cancelRuleId = cancelRuleId;
+    }
+
+    public Integer getCancelType() {
+        return cancelType;
+    }
+
+    public void setCancelType(Integer cancelType) {
+        this.cancelType = cancelType;
+    }
+
+    public Integer getCancelTimeType() {
+        return cancelTimeType;
+    }
+
+    public void setCancelTimeType(Integer cancelTimeType) {
+        this.cancelTimeType = cancelTimeType;
+    }
+
+    public Integer getCancelDaysAgo() {
+        return cancelDaysAgo;
+    }
+
+    public void setCancelDaysAgo(Integer cancelDaysAgo) {
+        this.cancelDaysAgo = cancelDaysAgo;
+    }
+
+    public String getCancelTimeAgo() {
+        return cancelTimeAgo;
+    }
+
+    public void setCancelTimeAgo(String cancelTimeAgo) {
+        this.cancelTimeAgo = cancelTimeAgo;
+    }
+
+    public Integer getCancelHoursAgo() {
+        return cancelHoursAgo;
+    }
+
+    public void setCancelHoursAgo(Integer cancelHoursAgo) {
+        this.cancelHoursAgo = cancelHoursAgo;
+    }
+
+    public Integer getDeductionType() {
+        return deductionType;
+    }
+
+    public void setDeductionType(Integer deductionType) {
+        this.deductionType = deductionType;
+    }
+
+    // 兼容性方法
     public String getId() {
         return id;
     }
@@ -70,14 +153,6 @@ public class CancelRule {
 
     public void setCancelable(Integer cancelable) {
         this.cancelable = cancelable;
-    }
-
-    public Integer getCancelType() {
-        return cancelType;
-    }
-
-    public void setCancelType(Integer cancelType) {
-        this.cancelType = cancelType;
     }
 
     public String getFreeCancelDeadline() {

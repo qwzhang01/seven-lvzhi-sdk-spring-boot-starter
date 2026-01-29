@@ -16,15 +16,15 @@ import io.github.qwzhang01.luzhi.sdk.dto.member.MemberInfo;
 import io.github.qwzhang01.luzhi.sdk.dto.member.MemberNotifyResponse;
 import io.github.qwzhang01.luzhi.sdk.dto.order.*;
 import io.github.qwzhang01.luzhi.sdk.dto.product.ProductDetail;
-import io.github.qwzhang01.luzhi.sdk.dto.product.ProductInfo;
+import io.github.qwzhang01.luzhi.sdk.dto.product.ProductListResponse;
 import io.github.qwzhang01.luzhi.sdk.dto.region.RegionInfo;
 import io.github.qwzhang01.luzhi.sdk.dto.roomtype.RoomTypeDetail;
 import io.github.qwzhang01.luzhi.sdk.dto.roomtype.RoomTypeInfo;
 import io.github.qwzhang01.luzhi.sdk.service.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -66,7 +66,8 @@ public class LvzhiDrpApiIntegrationTest {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final List<ApiTestResult> testResults = new ArrayList<>();
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     // 动态获取的ID
     private static Long roomTypeId;
@@ -148,7 +149,9 @@ public class LvzhiDrpApiIntegrationTest {
 
             index = 1;
             for (ApiTestResult result : testResults) {
-                writer.printf("### %d. %s - %s%n%n", index++, result.getApiMethod().name(), result.getApiMethod().getDescription());
+                writer.printf("### %d. %s - %s%n%n", index++,
+                        result.getApiMethod().name(),
+                        result.getApiMethod().getDescription());
                 writer.println("**请求URL**: `" + result.getRequestUrl() + "`");
                 writer.println();
                 writer.println("**请求参数**:");
@@ -156,7 +159,8 @@ public class LvzhiDrpApiIntegrationTest {
                 writer.println(result.getRequestParams());
                 writer.println("```");
                 writer.println();
-                writer.println("**执行状态**: " + (result.isSuccess() ? "✅ 成功" : "❌ 失败"));
+                writer.println("**执行状态**: " + (result.isSuccess() ? "✅ 成功" :
+                        "❌ 失败"));
                 writer.println();
 
                 // REGION_LIST_TREES 不保存返回数据
@@ -197,7 +201,8 @@ public class LvzhiDrpApiIntegrationTest {
         params.put("clientId", clientId);
         params.put("clientSecret", clientSecret);
 
-        BaseResponse<TokenData> response = authorizeService.getToken(clientId, clientSecret);
+        BaseResponse<TokenData> response = authorizeService.getToken(clientId
+                , clientSecret);
 
         testResults.add(new ApiTestResult(
                 apiMethod,
@@ -208,7 +213,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "获取Token失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "获取Token失败: " + response.getMessage());
     }
 
     /**
@@ -224,7 +230,8 @@ public class LvzhiDrpApiIntegrationTest {
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("provinceId", null);
 
-        BaseResponse<List<RegionInfo>> response = regionService.listRegionTrees(null);
+        BaseResponse<List<RegionInfo>> response =
+                regionService.listRegionTrees(null);
 
         testResults.add(new ApiTestResult(
                 apiMethod,
@@ -235,7 +242,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "查询区域树失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "查询区域树失败: " + response.getMessage());
     }
 
     /**
@@ -254,7 +262,8 @@ public class LvzhiDrpApiIntegrationTest {
         params.put("pageIndex", 1);
         params.put("pageSize", 10);
 
-        BaseResponse<PageData<HotelBasicInfo>> response = hotelService.list(null, null, 1, 10);
+        BaseResponse<PageData<HotelBasicInfo>> response =
+                hotelService.list(null, null, 1, 10);
 
         testResults.add(new ApiTestResult(
                 apiMethod,
@@ -265,7 +274,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "查询酒店列表失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "查询酒店列表失败: " + response.getMessage());
     }
 
     /**
@@ -281,7 +291,8 @@ public class LvzhiDrpApiIntegrationTest {
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("hotelVid", hotelVid);
 
-        BaseResponse<HotelDetailInfo> response = hotelService.getByVid(hotelVid);
+        BaseResponse<HotelDetailInfo> response =
+                hotelService.getByVid(hotelVid);
 
         testResults.add(new ApiTestResult(
                 apiMethod,
@@ -292,7 +303,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "获取酒店详情失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "获取酒店详情失败: " + response.getMessage());
     }
 
     /**
@@ -308,7 +320,8 @@ public class LvzhiDrpApiIntegrationTest {
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("hotelVid", hotelVid);
 
-        BaseResponse<List<RoomTypeInfo>> response = roomTypeService.listByHotelVid(hotelVid);
+        BaseResponse<List<RoomTypeInfo>> response =
+                roomTypeService.listByHotelVid(hotelVid);
 
         // 获取第一个房型ID供后续使用
         if (response.isSuccess() && response.getData() != null && !response.getData().isEmpty()) {
@@ -324,7 +337,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "查询房型列表失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "查询房型列表失败: " + response.getMessage());
     }
 
     /**
@@ -344,7 +358,8 @@ public class LvzhiDrpApiIntegrationTest {
         params.put("hotelVid", hotelVid);
         params.put("roomTypeId", testRoomTypeId);
 
-        BaseResponse<RoomTypeDetail> response = roomTypeService.getById(hotelVid, testRoomTypeId);
+        BaseResponse<RoomTypeDetail> response =
+                roomTypeService.getById(hotelVid, testRoomTypeId);
 
         testResults.add(new ApiTestResult(
                 apiMethod,
@@ -355,7 +370,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "获取房型详情失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "获取房型详情失败: " + response.getMessage());
     }
 
     /**
@@ -371,14 +387,18 @@ public class LvzhiDrpApiIntegrationTest {
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("hotelVid", hotelVid);
 
-        BaseResponse<ProductInfo> response = productService.list(hotelVid);
+        BaseResponse<ProductListResponse> response =
+                productService.list(hotelVid);
 
         // 获取第一个产品ID供后续使用
         if (response.isSuccess() && response.getData() != null) {
-            ProductInfo firstProduct = response.getData();
-            productId = firstProduct.getProductId();
-            if (roomTypeId == null) {
-                roomTypeId = firstProduct.getRoomTypeId();
+            ProductListResponse firstProduct = response.getData();
+            if (firstProduct.getProducts() != null && !firstProduct.getProducts().isEmpty()) {
+                productId = firstProduct.getProducts().get(0).getProductId();
+                if (roomTypeId == null) {
+                    roomTypeId =
+                            firstProduct.getProducts().get(0).getRoomTypeId();
+                }
             }
         }
 
@@ -391,7 +411,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "查询产品列表失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "查询产品列表失败: " + response.getMessage());
     }
 
     /**
@@ -411,7 +432,8 @@ public class LvzhiDrpApiIntegrationTest {
         params.put("hotelVid", hotelVid);
         params.put("productId", testProductId);
 
-        BaseResponse<ProductDetail> response = productService.getById(hotelVid, testProductId);
+        BaseResponse<ProductDetail> response =
+                productService.getById(hotelVid, testProductId);
 
         testResults.add(new ApiTestResult(
                 apiMethod,
@@ -422,7 +444,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "获取产品详情失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "获取产品详情失败: " + response.getMessage());
     }
 
     /**
@@ -447,7 +470,8 @@ public class LvzhiDrpApiIntegrationTest {
         params.put("startDate", startDate);
         params.put("endDate", endDate);
 
-        BaseResponse<RoomTypeDailyResponse> response = dailyService.listRoomTypeDailyDetails(
+        BaseResponse<RoomTypeDailyResponse> response =
+                dailyService.listRoomTypeDailyDetails(
                 hotelVid, testRoomTypeId, startDate, endDate);
 
         testResults.add(new ApiTestResult(
@@ -459,7 +483,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "查询房型每日明细失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "查询房型每日明细失败: " + response.getMessage());
     }
 
     /**
@@ -486,7 +511,8 @@ public class LvzhiDrpApiIntegrationTest {
         params.put("startDate", startDate);
         params.put("endDate", endDate);
 
-        BaseResponse<ProductDailyResponse> response = dailyService.listProductDailyDetails(
+        BaseResponse<ProductDailyResponse> response =
+                dailyService.listProductDailyDetails(
                 hotelVid, testRoomTypeId, testProductId, startDate, endDate);
 
         testResults.add(new ApiTestResult(
@@ -498,7 +524,8 @@ public class LvzhiDrpApiIntegrationTest {
                 response.isSuccess() ? null : response.getMessage()
         ));
 
-        Assertions.assertTrue(response.isSuccess(), "查询产品每日明细失败: " + response.getMessage());
+        Assertions.assertTrue(response.isSuccess(),
+                "查询产品每日明细失败: " + response.getMessage());
     }
 
     /**
@@ -516,7 +543,8 @@ public class LvzhiDrpApiIntegrationTest {
         Long testProductId = productId != null ? productId : 1L;
 
         String checkInDate = LocalDate.now().plusDays(7).format(DATE_FORMATTER);
-        String checkOutDate = LocalDate.now().plusDays(8).format(DATE_FORMATTER);
+        String checkOutDate =
+                LocalDate.now().plusDays(8).format(DATE_FORMATTER);
         String drpOrderId = "TEST_" + System.currentTimeMillis();
 
         CreateOrderRequest request = new CreateOrderRequest();
@@ -536,6 +564,7 @@ public class LvzhiDrpApiIntegrationTest {
         CreateOrderRequest.Guest guest = new CreateOrderRequest.Guest();
         guest.setGuestName("测试用户");
         guest.setGuestPhone("13800138000");
+        guest.setContactPhone("13800138000");
         guest.setGuestIdType(0);
         guest.setGuestIdNo("110101199001011234");
         guest.setGuests(1);
@@ -548,7 +577,8 @@ public class LvzhiDrpApiIntegrationTest {
         request.setContact(contact);
 
         // 每日明细
-        CreateOrderRequest.DailyInfo dailyInfo = new CreateOrderRequest.DailyInfo();
+        CreateOrderRequest.DailyInfo dailyInfo =
+                new CreateOrderRequest.DailyInfo();
         dailyInfo.setRoomNo(1);
         dailyInfo.setCheckDate(checkInDate);
         dailyInfo.setRate(new BigDecimal("300.00"));
@@ -557,11 +587,13 @@ public class LvzhiDrpApiIntegrationTest {
         request.setDailyInfos(Collections.singletonList(dailyInfo));
 
         // 取消规则
-        CreateOrderRequest.CancelRule cancelRule = new CreateOrderRequest.CancelRule();
+        CreateOrderRequest.CancelRule cancelRule =
+                new CreateOrderRequest.CancelRule();
         cancelRule.setCancelType(0);
         request.setCancelRule(cancelRule);
 
-        BaseResponse<CreateOrderResponse> response = orderService.create(request);
+        BaseResponse<CreateOrderResponse> response =
+                orderService.create(request);
 
         // 保存订单ID供取消使用
         if (response.isSuccess() && response.getData() != null) {
@@ -592,7 +624,8 @@ public class LvzhiDrpApiIntegrationTest {
         String requestUrl = baseUrl + apiMethod.getUrl();
 
         // 使用刚创建的订单ID，如果没有则使用模拟ID
-        String testOrderId = createdOrderId != null ? createdOrderId : "TEST_ORDER_NOT_EXISTS";
+        String testOrderId = createdOrderId != null ? createdOrderId :
+                "TEST_ORDER_NOT_EXISTS";
         String testDrpOrderId = "TEST_" + System.currentTimeMillis();
 
         Map<String, Object> params = new LinkedHashMap<>();
@@ -632,7 +665,8 @@ public class LvzhiDrpApiIntegrationTest {
         Long testProductId = productId != null ? productId : 1L;
 
         String checkInDate = LocalDate.now().plusDays(7).format(DATE_FORMATTER);
-        String checkOutDate = LocalDate.now().plusDays(8).format(DATE_FORMATTER);
+        String checkOutDate =
+                LocalDate.now().plusDays(8).format(DATE_FORMATTER);
 
         ReserveValidateRequest request = new ReserveValidateRequest();
         request.setHotelVid(hotelVid);
@@ -643,12 +677,14 @@ public class LvzhiDrpApiIntegrationTest {
         request.setCount(1);
 
         // 订单每日明细
-        ReserveValidateRequest.OrderDailyDetail dailyDetail = new ReserveValidateRequest.OrderDailyDetail();
+        ReserveValidateRequest.OrderDailyDetail dailyDetail =
+                new ReserveValidateRequest.OrderDailyDetail();
         dailyDetail.setDate(checkInDate);
         dailyDetail.setRate(new BigDecimal("300.00"));
         request.setOrderDailyDetails(Collections.singletonList(dailyDetail));
 
-        BaseResponse<ReserveValidateResponse> response = orderService.reserveValidate(request);
+        BaseResponse<ReserveValidateResponse> response =
+                orderService.reserveValidate(request);
 
         testResults.add(new ApiTestResult(
                 apiMethod,
@@ -674,12 +710,14 @@ public class LvzhiDrpApiIntegrationTest {
         String requestUrl = baseUrl + apiMethod.getUrl();
 
         // 使用刚创建的订单ID，如果没有则使用模拟ID
-        String testOrderId = createdOrderId != null ? createdOrderId : "TEST_ORDER_NOT_EXISTS";
+        String testOrderId = createdOrderId != null ? createdOrderId :
+                "TEST_ORDER_NOT_EXISTS";
 
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("orderId", testOrderId);
 
-        BaseResponse<OrderDetailInfo> response = orderService.getByOrderId(testOrderId);
+        BaseResponse<OrderDetailInfo> response =
+                orderService.getByOrderId(testOrderId);
 
         testResults.add(new ApiTestResult(
                 apiMethod,
@@ -818,8 +856,10 @@ public class LvzhiDrpApiIntegrationTest {
         private final boolean success;
         private final String errorMessage;
 
-        public ApiTestResult(ApiMethod apiMethod, String requestUrl, String requestParams,
-                             String responseData, boolean success, String errorMessage) {
+        public ApiTestResult(ApiMethod apiMethod, String requestUrl,
+                             String requestParams,
+                             String responseData, boolean success,
+                             String errorMessage) {
             this.apiMethod = apiMethod;
             this.requestUrl = requestUrl;
             this.requestParams = requestParams;

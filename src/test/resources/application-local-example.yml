@@ -1,0 +1,67 @@
+# ===========================================
+# 旅智分销平台API配置示例
+# ===========================================
+# 配置前缀：lvzhi.drp
+# 配置类：LvzhiDrpProperties
+
+# API基础配置
+lvzhi:
+  drp:
+    # API基础URL - 支持生产环境和测试环境
+    base-url: https://open-qa.zktapi.com/drp
+    
+    # 客户端认证信息（必填）
+    client-id: "your-client-id-here"           # 客户端ID/应用ID
+    client-secret: "your-client-secret-here"   # 客户端密钥/应用秘钥
+    secret-key: "your-signature-key-here"      # 签名密钥
+    
+    # API版本号
+    version: V1.0.0
+    
+    # HTTP客户端配置
+    http-client:
+      # 连接池配置
+      max-conn-total: 200           # 最大连接数（默认：200）
+      max-conn-per-route: 50        # 每个路由最大连接数（默认：50）
+      
+      # 超时配置（单位：毫秒）
+      connect-timeout: 5000         # 连接超时时间（默认：5000）
+      read-timeout: 30000           # 读取超时时间（默认：30000）
+      connection-request-timeout: 5000 # 连接请求超时时间（默认：5000）
+
+# ===========================================
+# 测试环境特定配置
+# ===========================================
+test:
+  # 测试酒店VID
+  hotel-vid: 200372
+
+# ===========================================
+# 日志配置
+# ===========================================
+logging:
+  level:
+    # SDK相关日志级别
+    io.github.qwzhang01.luzhi.sdk: DEBUG
+    
+    # HTTP客户端日志级别
+    org.apache.http: DEBUG
+    org.apache.http.wire: DEBUG      # HTTP请求/响应详情
+    
+    # Spring Boot自动配置日志
+    org.springframework.boot.autoconfigure: DEBUG
+
+# ===========================================
+# 可选配置示例
+# ===========================================
+# 生产环境配置示例（注释状态）
+#lvzhi:
+#  drp:
+#    base-url: https://open.zktapi.com/drp
+#    client-id: ${LVZHI_CLIENT_ID:prod-client-id}
+#    client-secret: ${LVZHI_CLIENT_SECRET:prod-client-secret}
+#    secret-key: ${LVZHI_SECRET_KEY:prod-secret-key}
+#    http-client:
+#      max-conn-total: 500
+#      max-conn-per-route: 100
+#      read-timeout: 60000

@@ -1,0 +1,109 @@
+{
+  "groups": [
+    {
+      "name": "lvzhi.drp",
+      "type": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "description": "旅智分销平台API配置"
+    },
+    {
+      "name": "lvzhi.drp.http-client",
+      "type": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$HttpClientProperties",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "description": "HTTP客户端配置"
+    }
+  ],
+  "properties": [
+    {
+      "name": "lvzhi.drp.base-url",
+      "type": "java.lang.String",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "defaultValue": "https://open.zktapi.com/drp",
+      "description": "API基础URL"
+    },
+    {
+      "name": "lvzhi.drp.client-id",
+      "type": "java.lang.String",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "description": "客户端ID（应用ID/客户端用户名）"
+    },
+    {
+      "name": "lvzhi.drp.client-secret",
+      "type": "java.lang.String",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "description": "客户端密钥（应用秘钥/客户端密码）"
+    },
+    {
+      "name": "lvzhi.drp.secret-key",
+      "type": "java.lang.String",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "description": "签名密钥（用于生成签名）"
+    },
+    {
+      "name": "lvzhi.drp.version",
+      "type": "java.lang.String",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "defaultValue": "V1.0.0",
+      "description": "API版本号"
+    },
+    {
+      "name": "lvzhi.drp.http-client.max-conn-total",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$HttpClientProperties",
+      "defaultValue": 200,
+      "description": "最大连接数"
+    },
+    {
+      "name": "lvzhi.drp.http-client.max-conn-per-route",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$HttpClientProperties",
+      "defaultValue": 50,
+      "description": "每个路由最大连接数"
+    },
+    {
+      "name": "lvzhi.drp.http-client.connect-timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$HttpClientProperties",
+      "defaultValue": 5000,
+      "description": "连接超时时间（毫秒）"
+    },
+    {
+      "name": "lvzhi.drp.http-client.read-timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$HttpClientProperties",
+      "defaultValue": 30000,
+      "description": "读取超时时间（毫秒）"
+    },
+    {
+      "name": "lvzhi.drp.http-client.connection-request-timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$HttpClientProperties",
+      "defaultValue": 5000,
+      "description": "连接请求超时时间（毫秒）"
+    }
+  ],
+  "hints": [
+    {
+      "name": "lvzhi.drp.base-url",
+      "values": [
+        {
+          "value": "https://open.zktapi.com/drp",
+          "description": "生产环境API地址"
+        },
+        {
+          "value": "https://open-test.zktapi.com/drp",
+          "description": "测试环境API地址"
+        }
+      ]
+    },
+    {
+      "name": "lvzhi.drp.version",
+      "values": [
+        {
+          "value": "V1.0.0",
+          "description": "当前稳定版本"
+        }
+      ]
+    }
+  ]
+}

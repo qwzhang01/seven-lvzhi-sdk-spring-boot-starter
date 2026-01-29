@@ -49,9 +49,24 @@ public class CreateOrderRequest {
     private Integer roomCount;
 
     /**
+     * 预订数量
+     */
+    private Integer count;
+
+    /**
      * 总金额
      */
     private BigDecimal totalAmount;
+
+    /**
+     * 实付金额
+     */
+    private BigDecimal payAmount;
+
+    /**
+     * 折扣金额
+     */
+    private BigDecimal discountAmount;
 
     /**
      * 结算金额
@@ -89,6 +104,26 @@ public class CreateOrderRequest {
     private String remark;
 
     /**
+     * 币种；默认CNY
+     */
+    private String currency;
+
+    /**
+     * 客户端IP
+     */
+    private String clientIp;
+
+    /**
+     * 会员卡号
+     */
+    private String memberNo;
+
+    /**
+     * 会员等级
+     */
+    private Integer memberLevel;
+
+    /**
      * 入住人列表
      */
     private List<Guest> guests;
@@ -97,6 +132,11 @@ public class CreateOrderRequest {
      * 每日明细列表
      */
     private List<DailyInfo> dailyInfos;
+
+    /**
+     * 订单每日明细集合
+     */
+    private List<ReserveValidateRequest.OrderDailyDetail> orderDailyDetails;
 
     /**
      * 联系人信息
@@ -171,12 +211,36 @@ public class CreateOrderRequest {
         this.roomCount = roomCount;
     }
 
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public BigDecimal getPayAmount() {
+        return payAmount;
+    }
+
+    public void setPayAmount(BigDecimal payAmount) {
+        this.payAmount = payAmount;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public BigDecimal getSettleAmount() {
@@ -233,6 +297,38 @@ public class CreateOrderRequest {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getClientIp() {
+        return clientIp;
+    }
+
+    public void setClientIp(String clientIp) {
+        this.clientIp = clientIp;
+    }
+
+    public String getMemberNo() {
+        return memberNo;
+    }
+
+    public void setMemberNo(String memberNo) {
+        this.memberNo = memberNo;
+    }
+
+    public Integer getMemberLevel() {
+        return memberLevel;
+    }
+
+    public void setMemberLevel(Integer memberLevel) {
+        this.memberLevel = memberLevel;
     }
 
     public List<Guest> getGuests() {
@@ -315,6 +411,11 @@ public class CreateOrderRequest {
          * 入住人数
          */
         private Integer guests;
+
+        /**
+         * 入住人类型；0: 成人，1: 儿童
+         */
+        private Integer guestType;
 
         /**
          * 证件类型；0: 身份证，1: 护照，2: 其他
@@ -412,6 +513,14 @@ public class CreateOrderRequest {
 
         public void setGuests(Integer guests) {
             this.guests = guests;
+        }
+
+        public Integer getGuestType() {
+            return guestType;
+        }
+
+        public void setGuestType(Integer guestType) {
+            this.guestType = guestType;
         }
 
         public Integer getGuestIdType() {

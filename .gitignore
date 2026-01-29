@@ -81,3 +81,4 @@ spring-shell.log
 # Application specific
 application-local.yml
 application-local.properties
+api-test-report.md

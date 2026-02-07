@@ -460,10 +460,10 @@ public class LvzhiDrpApiIntegrationTest {
         String requestUrl = baseUrl + apiMethod.getUrl();
 
         // 如果没有获取到roomTypeId，使用默认值
-        Long testRoomTypeId = roomTypeId != null ? roomTypeId : 1L;
+        Long testRoomTypeId = roomTypeId != null ? roomTypeId : 117586L;
 
-        String startDate = LocalDate.now().plusDays(1).format(DATE_FORMATTER);
-        String endDate = LocalDate.now().plusDays(3).format(DATE_FORMATTER);
+        String startDate = LocalDate.now().plusDays(7).format(DATE_FORMATTER);
+        String endDate = LocalDate.now().plusDays(8).format(DATE_FORMATTER);
 
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("hotelVid", hotelVid);
@@ -499,11 +499,11 @@ public class LvzhiDrpApiIntegrationTest {
         String requestUrl = baseUrl + apiMethod.getUrl();
 
         // 如果没有获取到roomTypeId和productId，使用默认值
-        Long testRoomTypeId = roomTypeId != null ? roomTypeId : 1L;
-        Long testProductId = productId != null ? productId : 1L;
+        Long testRoomTypeId = roomTypeId != null ? roomTypeId : 117586L;
+        Long testProductId = productId != null ? productId : 846836L;
 
-        String startDate = LocalDate.now().plusDays(1).format(DATE_FORMATTER);
-        String endDate = LocalDate.now().plusDays(3).format(DATE_FORMATTER);
+        String startDate = LocalDate.now().plusDays(7).format(DATE_FORMATTER);
+        String endDate = LocalDate.now().plusDays(8).format(DATE_FORMATTER);
 
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("hotelVid", hotelVid);
@@ -557,8 +557,8 @@ public class LvzhiDrpApiIntegrationTest {
         request.setCheckInDate(checkInDate);
         request.setCheckOutDate(checkOutDate);
         request.setCount(1); // 预订数量
-        request.setTotalAmount(new BigDecimal("300.00"));
-        request.setPayAmount(new BigDecimal("300.00")); // 实付金额
+        request.setTotalAmount(new BigDecimal("199.00"));
+        request.setPayAmount(new BigDecimal("199.00")); // 实付金额
         request.setDiscountAmount(new BigDecimal("0.00")); // 折扣金额
         request.setGuaranteeType(1); // 无担保
         request.setGuaranteeAmount(new BigDecimal("0.00"));
@@ -607,7 +607,7 @@ public class LvzhiDrpApiIntegrationTest {
         // 订单每日明细集合
         ReserveValidateRequest.OrderDailyDetail orderDailyDetail = new ReserveValidateRequest.OrderDailyDetail();
         orderDailyDetail.setDate(checkInDate);
-        orderDailyDetail.setRate(new BigDecimal("300.00"));
+        orderDailyDetail.setRate(new BigDecimal("199.00"));
         orderDailyDetail.setMealType(1); // 早餐
         orderDailyDetail.setMealCount(2); // 2份早餐
         

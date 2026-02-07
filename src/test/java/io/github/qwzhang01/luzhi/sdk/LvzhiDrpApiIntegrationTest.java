@@ -608,19 +608,19 @@ public class LvzhiDrpApiIntegrationTest {
         ReserveValidateRequest.OrderDailyDetail orderDailyDetail = new ReserveValidateRequest.OrderDailyDetail();
         orderDailyDetail.setDate(checkInDate);
         orderDailyDetail.setRate(new BigDecimal("199.00"));
-        orderDailyDetail.setMealType(1); // 早餐
-        orderDailyDetail.setMealCount(2); // 2份早餐
+        //orderDailyDetail.setMealType(1); // 早餐
+        //orderDailyDetail.setMealCount(2); // 2份早餐
         
         request.setOrderDailyDetails(Collections.singletonList(orderDailyDetail));
 
         // 取消规则
         CreateOrderRequest.CancelRule cancelRule = new CreateOrderRequest.CancelRule();
-        cancelRule.setCancelType(0); // 免费取消
+        cancelRule.setCancelType(1); // 免费取消
         cancelRule.setCancelTimeType(1); // 小时类型
-        cancelRule.setCancelDaysAgo(0);
-        cancelRule.setCancelTimeAgo("");
-        cancelRule.setCancelHoursAgo(6); // 入住前6小时
-        cancelRule.setDeductionType(0); // 不扣费
+        //cancelRule.setCancelDaysAgo(0);
+        //cancelRule.setCancelTimeAgo("");
+        //cancelRule.setCancelHoursAgo(6); // 入住前6小时
+        //cancelRule.setDeductionType(0); // 不扣费
         request.setCancelRule(cancelRule);
 
         BaseResponse<CreateOrderResponse> response = orderService.create(request);
@@ -691,8 +691,8 @@ public class LvzhiDrpApiIntegrationTest {
         String requestUrl = baseUrl + apiMethod.getUrl();
 
         // 如果没有获取到roomTypeId和productId，使用默认值
-        Long testRoomTypeId = roomTypeId != null ? roomTypeId : 1L;
-        Long testProductId = productId != null ? productId : 1L;
+        Long testRoomTypeId = roomTypeId != null ? roomTypeId : 117586L;
+        Long testProductId = productId != null ? productId : 846836L;
 
         String checkInDate = LocalDate.now().plusDays(7).format(DATE_FORMATTER);
         String checkOutDate =
@@ -710,7 +710,7 @@ public class LvzhiDrpApiIntegrationTest {
         ReserveValidateRequest.OrderDailyDetail dailyDetail =
                 new ReserveValidateRequest.OrderDailyDetail();
         dailyDetail.setDate(checkInDate);
-        dailyDetail.setRate(new BigDecimal("300.00"));
+        dailyDetail.setRate(new BigDecimal("199.00"));
         request.setOrderDailyDetails(Collections.singletonList(dailyDetail));
 
         BaseResponse<ReserveValidateResponse> response =

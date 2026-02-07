@@ -35,6 +35,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.Arrays;
 
 /**
  * 旅智分销平台API集成测试
@@ -571,6 +572,17 @@ public class LvzhiDrpApiIntegrationTest {
         request.setClientIp("192.168.1.100"); // 客户端IP
         request.setMemberNo("VIP001"); // 会员卡号
         request.setMemberLevel(1); // 会员等级
+        
+        // 新增字段（根据文档要求）
+        request.setContactName("测试联系人");
+        request.setContactPhone("13800138000");
+        request.setContactEmail("contact@example.com");
+        request.setLatestReservationTimeType(0); // 0:当天；1:次日
+        request.setLatestReservationTime("18:00");
+        request.setEarlyArrivalTime(LocalDateTime.now().plusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        request.setLastArrivalTime(LocalDateTime.now().plusDays(7).plusHours(6).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        request.setGuestNoticeInfo("测试备注信息");
+        request.setGuestInvoiceInfo("测试开票信息");
 
         // 入住人信息
         CreateOrderRequest.Guest guest = new CreateOrderRequest.Guest();
@@ -590,7 +602,43 @@ public class LvzhiDrpApiIntegrationTest {
         guest.setGuestPhone("13800138000");
         guest.setOta("携程");
         guest.setGuestRemark("特殊要求：需要无烟房");
+        
+        // 新增字段（根据文档要求）
+        guest.setAge(30); // 年龄
+        guest.setIdType(0); // 证件类型（映射到guestIdType）
+        guest.setIdNo("110101199001011234"); // 证件号码（映射到guestIdNo）
+        
         request.setGuests(Collections.singletonList(guest));
+        
+        // 客户权益集合
+        CreateOrderRequest.GuestBenefit guestBenefit = new CreateOrderRequest.GuestBenefit();
+        guestBenefit.setBenefitName("延迟退房");
+        guestBenefit.setQuantity(1);
+        guestBenefit.setEffectDate(LocalDate.now().plusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        guestBenefit.setBenefitDesc("可延迟到15:00退房");
+        
+        CreateOrderRequest.GuestBenefit guestBenefit2 = new CreateOrderRequest.GuestBenefit();
+        guestBenefit2.setBenefitName("免费早餐");
+        guestBenefit2.setQuantity(2);
+        guestBenefit2.setEffectDate(LocalDate.now().plusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        guestBenefit2.setBenefitDesc("双人免费早餐");
+        
+        request.setGuestBenefits(Arrays.asList(guestBenefit, guestBenefit2));
+
+        // 订单每日明细集合
+        ReserveValidateRequest.OrderDailyDetail orderDailyDetail = new ReserveValidateRequest.OrderDailyDetail();
+        orderDailyDetail.setDate(checkInDate);
+        orderDailyDetail.setRate(new BigDecimal("300.00"));
+        orderDailyDetail.setMealType(1); // 早餐
+        orderDailyDetail.setMealCount(2); // 2份早餐
+        
+        ReserveValidateRequest.OrderDailyDetail orderDailyDetail2 = new ReserveValidateRequest.OrderDailyDetail();
+        orderDailyDetail2.setDate(checkOutDate);
+        orderDailyDetail2.setRate(new BigDecimal("300.00"));
+        orderDailyDetail2.setMealType(1); // 早餐
+        orderDailyDetail2.setMealCount(2); // 2份早餐
+        
+        request.setOrderDailyDetails(Arrays.asList(orderDailyDetail, orderDailyDetail2));
 
         // 联系人信息
         CreateOrderRequest.Contact contact = new CreateOrderRequest.Contact();

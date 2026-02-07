@@ -124,6 +124,21 @@ public class CreateOrderRequest {
     private Integer memberLevel;
 
     /**
+     * 联系人姓名
+     */
+    private String contactName;
+
+    /**
+     * 联系人电话
+     */
+    private String contactPhone;
+
+    /**
+     * 联系人邮箱
+     */
+    private String contactEmail;
+
+    /**
      * 入住人列表
      */
     private List<Guest> guests;
@@ -137,6 +152,41 @@ public class CreateOrderRequest {
      * 订单每日明细集合
      */
     private List<ReserveValidateRequest.OrderDailyDetail> orderDailyDetails;
+
+    /**
+     * 客户权益集合
+     */
+    private List<GuestBenefit> guestBenefits;
+
+    /**
+     * 最晚保留时间类型；0:当天；1:次日
+     */
+    private Integer latestReservationTimeType;
+
+    /**
+     * 最晚保留时间；eg:18:00
+     */
+    private String latestReservationTime;
+
+    /**
+     * 最早到店时间；yyyy-MM-dd HH:mm:ss
+     */
+    private String earlyArrivalTime;
+
+    /**
+     * 最晚到店时间；yyyy-MM-dd HH:mm:ss（注意：文档中字段名为lastArrivalTime）
+     */
+    private String lastArrivalTime;
+
+    /**
+     * 用户备注信息
+     */
+    private String guestNoticeInfo;
+
+    /**
+     * 用户开票信息
+     */
+    private String guestInvoiceInfo;
 
     /**
      * 联系人信息
@@ -331,6 +381,30 @@ public class CreateOrderRequest {
         this.memberLevel = memberLevel;
     }
 
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
     public List<Guest> getGuests() {
         return guests;
     }
@@ -345,6 +419,70 @@ public class CreateOrderRequest {
 
     public void setDailyInfos(List<DailyInfo> dailyInfos) {
         this.dailyInfos = dailyInfos;
+    }
+
+    public List<ReserveValidateRequest.OrderDailyDetail> getOrderDailyDetails() {
+        return orderDailyDetails;
+    }
+
+    public void setOrderDailyDetails(List<ReserveValidateRequest.OrderDailyDetail> orderDailyDetails) {
+        this.orderDailyDetails = orderDailyDetails;
+    }
+
+    public List<GuestBenefit> getGuestBenefits() {
+        return guestBenefits;
+    }
+
+    public void setGuestBenefits(List<GuestBenefit> guestBenefits) {
+        this.guestBenefits = guestBenefits;
+    }
+
+    public Integer getLatestReservationTimeType() {
+        return latestReservationTimeType;
+    }
+
+    public void setLatestReservationTimeType(Integer latestReservationTimeType) {
+        this.latestReservationTimeType = latestReservationTimeType;
+    }
+
+    public String getLatestReservationTime() {
+        return latestReservationTime;
+    }
+
+    public void setLatestReservationTime(String latestReservationTime) {
+        this.latestReservationTime = latestReservationTime;
+    }
+
+    public String getEarlyArrivalTime() {
+        return earlyArrivalTime;
+    }
+
+    public void setEarlyArrivalTime(String earlyArrivalTime) {
+        this.earlyArrivalTime = earlyArrivalTime;
+    }
+
+    public String getLastArrivalTime() {
+        return lastArrivalTime;
+    }
+
+    public void setLastArrivalTime(String lastArrivalTime) {
+        this.lastArrivalTime = lastArrivalTime;
+    }
+
+    public String getGuestNoticeInfo() {
+        return guestNoticeInfo;
+    }
+
+    public void setGuestNoticeInfo(String guestNoticeInfo) {
+        this.guestNoticeInfo = guestNoticeInfo;
+    }
+
+    public String getGuestInvoiceInfo() {
+        return guestInvoiceInfo;
+    }
+
+    public void setGuestInvoiceInfo(String guestInvoiceInfo) {
+        this.guestInvoiceInfo = guestInvoiceInfo;
     }
 
     public Contact getContact() {
@@ -418,9 +556,19 @@ public class CreateOrderRequest {
         private Integer guestType;
 
         /**
-         * 证件类型；0: 身份证，1: 护照，2: 其他
+         * 年龄
+         */
+        private Integer age;
+
+        /**
+         * 证件类型；0: 身份证，1: 护照，2: 其他（文档中字段名为idType）
          */
         private Integer guestIdType;
+
+        /**
+         * 证件类型（文档字段名，映射到guestIdType）
+         */
+        private Integer idType;
 
         /**
          * 入住人姓名
@@ -441,6 +589,11 @@ public class CreateOrderRequest {
          * 入住人证件号
          */
         private String guestIdNo;
+
+        /**
+         * 证件号码（文档字段名，映射到guestIdNo）
+         */
+        private String idNo;
 
         /**
          * 入住人电话
@@ -523,12 +676,29 @@ public class CreateOrderRequest {
             this.guestType = guestType;
         }
 
+        public Integer getAge() {
+            return age;
+        }
+
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+
         public Integer getGuestIdType() {
             return guestIdType;
         }
 
         public void setGuestIdType(Integer guestIdType) {
             this.guestIdType = guestIdType;
+        }
+
+        public Integer getIdType() {
+            return idType != null ? idType : guestIdType;
+        }
+
+        public void setIdType(Integer idType) {
+            this.idType = idType;
+            this.guestIdType = idType;
         }
 
         public String getGuestName() {
@@ -561,6 +731,15 @@ public class CreateOrderRequest {
 
         public void setGuestIdNo(String guestIdNo) {
             this.guestIdNo = guestIdNo;
+        }
+
+        public String getIdNo() {
+            return idNo != null ? idNo : guestIdNo;
+        }
+
+        public void setIdNo(String idNo) {
+            this.idNo = idNo;
+            this.guestIdNo = idNo;
         }
 
         public String getGuestPhone() {
@@ -894,6 +1073,67 @@ public class CreateOrderRequest {
 
         public void setInvoiceTitle(String invoiceTitle) {
             this.invoiceTitle = invoiceTitle;
+        }
+    }
+
+    /**
+     * 客户权益
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class GuestBenefit {
+
+        /**
+         * 权益名称
+         */
+        private String benefitName;
+
+        /**
+         * 权益份数
+         */
+        private Integer quantity;
+
+        /**
+         * 权益生效日期；yyyy-MM-dd
+         */
+        private String effectDate;
+
+        /**
+         * 权益描述
+         */
+        private String benefitDesc;
+
+        // Getters and Setters
+
+        public String getBenefitName() {
+            return benefitName;
+        }
+
+        public void setBenefitName(String benefitName) {
+            this.benefitName = benefitName;
+        }
+
+        public Integer getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(Integer quantity) {
+            this.quantity = quantity;
+        }
+
+        public String getEffectDate() {
+            return effectDate;
+        }
+
+        public void setEffectDate(String effectDate) {
+            this.effectDate = effectDate;
+        }
+
+        public String getBenefitDesc() {
+            return benefitDesc;
+        }
+
+        public void setBenefitDesc(String benefitDesc) {
+            this.benefitDesc = benefitDesc;
         }
     }
 

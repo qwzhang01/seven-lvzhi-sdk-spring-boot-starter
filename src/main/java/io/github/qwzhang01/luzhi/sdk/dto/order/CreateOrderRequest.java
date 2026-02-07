@@ -64,16 +64,6 @@ public class CreateOrderRequest {
     private BigDecimal discountAmount;
 
     /**
-     * 结算金额
-     */
-    private BigDecimal settleAmount;
-
-    /**
-     * 付款类型；0: 线下，1: 预付，2: 现付
-     */
-    private Integer paymentType;
-
-    /**
      * 担保类型
      */
     private Integer guaranteeType;
@@ -82,41 +72,10 @@ public class CreateOrderRequest {
      * 担保金额
      */
     private BigDecimal guaranteeAmount;
-
     /**
-     * 外部担保
+     * 订单每日明细集合
      */
-    private String otherGuarantee;
-
-    /**
-     * 最晚到店时间；格式为 HH:mm
-     */
-    private String latestArrivalTime;
-
-    /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 币种；默认CNY
-     */
-    private String currency;
-
-    /**
-     * 客户端IP
-     */
-    private String clientIp;
-
-    /**
-     * 会员卡号
-     */
-    private String memberNo;
-
-    /**
-     * 会员等级
-     */
-    private Integer memberLevel;
+    private List<ReserveValidateRequest.OrderDailyDetail> orderDailyDetails;
 
     /**
      * 联系人姓名
@@ -134,20 +93,18 @@ public class CreateOrderRequest {
     private String contactEmail;
 
     /**
+     * 会员卡号
+     */
+    private String memberNo;
+
+    /**
+     * 会员等级
+     */
+    private Integer memberLevel;
+    /**
      * 入住人列表
      */
     private List<Guest> guests;
-
-    /**
-     * 每日明细列表
-     */
-    private List<DailyInfo> dailyInfos;
-
-    /**
-     * 订单每日明细集合
-     */
-    private List<ReserveValidateRequest.OrderDailyDetail> orderDailyDetails;
-
     /**
      * 客户权益集合
      */
@@ -173,6 +130,16 @@ public class CreateOrderRequest {
      */
     private String lastArrivalTime;
 
+
+    /**
+     * 币种；默认CNY
+     */
+    private String currency;
+
+    /**
+     * 客户端IP
+     */
+    private String clientIp;
     /**
      * 用户备注信息
      */
@@ -184,14 +151,9 @@ public class CreateOrderRequest {
     private String guestInvoiceInfo;
 
     /**
-     * 联系人信息
+     * 备注
      */
-    private Contact contact;
-
-    /**
-     * 发票信息
-     */
-    private Invoice invoice;
+    private String remark;
 
     /**
      * 取消规则
@@ -280,22 +242,6 @@ public class CreateOrderRequest {
         this.discountAmount = discountAmount;
     }
 
-    public BigDecimal getSettleAmount() {
-        return settleAmount;
-    }
-
-    public void setSettleAmount(BigDecimal settleAmount) {
-        this.settleAmount = settleAmount;
-    }
-
-    public Integer getPaymentType() {
-        return paymentType;
-    }
-
-    public void setPaymentType(Integer paymentType) {
-        this.paymentType = paymentType;
-    }
-
     public Integer getGuaranteeType() {
         return guaranteeType;
     }
@@ -310,22 +256,6 @@ public class CreateOrderRequest {
 
     public void setGuaranteeAmount(BigDecimal guaranteeAmount) {
         this.guaranteeAmount = guaranteeAmount;
-    }
-
-    public String getOtherGuarantee() {
-        return otherGuarantee;
-    }
-
-    public void setOtherGuarantee(String otherGuarantee) {
-        this.otherGuarantee = otherGuarantee;
-    }
-
-    public String getLatestArrivalTime() {
-        return latestArrivalTime;
-    }
-
-    public void setLatestArrivalTime(String latestArrivalTime) {
-        this.latestArrivalTime = latestArrivalTime;
     }
 
     public String getRemark() {
@@ -400,14 +330,6 @@ public class CreateOrderRequest {
         this.guests = guests;
     }
 
-    public List<DailyInfo> getDailyInfos() {
-        return dailyInfos;
-    }
-
-    public void setDailyInfos(List<DailyInfo> dailyInfos) {
-        this.dailyInfos = dailyInfos;
-    }
-
     public List<ReserveValidateRequest.OrderDailyDetail> getOrderDailyDetails() {
         return orderDailyDetails;
     }
@@ -472,22 +394,6 @@ public class CreateOrderRequest {
         this.guestInvoiceInfo = guestInvoiceInfo;
     }
 
-    public Contact getContact() {
-        return contact;
-    }
-
-    public void setContact(Contact contact) {
-        this.contact = contact;
-    }
-
-    public Invoice getInvoice() {
-        return invoice;
-    }
-
-    public void setInvoice(Invoice invoice) {
-        this.invoice = invoice;
-    }
-
     public CancelRule getCancelRule() {
         return cancelRule;
     }
@@ -503,59 +409,9 @@ public class CreateOrderRequest {
     public static class Guest {
 
         /**
-         * 餐食类型；0: 无，1: 早餐，2: 午餐，3: 晚餐，4: 用餐
-         */
-        private Integer mealType;
-
-        /**
-         * 餐食份数
-         */
-        private Integer mealCount;
-
-        /**
-         * 联系人
-         */
-        private String contactName;
-
-        /**
-         * 联系人电话
-         */
-        private String contactPhone;
-
-        /**
-         * 联系人Email
-         */
-        private String contactMail;
-
-        /**
-         * 联系人传真
-         */
-        private String fax;
-
-        /**
-         * 入住人数
-         */
-        private Integer guests;
-
-        /**
          * 入住人类型；0: 成人，1: 儿童
          */
         private Integer guestType;
-
-        /**
-         * 年龄
-         */
-        private Integer age;
-
-        /**
-         * 证件类型；0: 身份证，1: 护照，2: 其他（文档中字段名为idType）
-         */
-        private Integer guestIdType;
-
-        /**
-         * 证件类型（文档字段名，映射到guestIdType）
-         */
-        private Integer idType;
 
         /**
          * 入住人姓名
@@ -573,87 +429,21 @@ public class CreateOrderRequest {
         private String guestLastName;
 
         /**
-         * 入住人证件号
+         * 年龄
          */
-        private String guestIdNo;
+        private Integer age;
 
         /**
-         * 证件号码（文档字段名，映射到guestIdNo）
+         * 证件类型；0: 身份证
+         */
+        private Integer idType;
+
+        /**
+         * 证件号码
          */
         private String idNo;
 
-        /**
-         * 入住人电话
-         */
-        private String guestPhone;
-
-        /**
-         * ota
-         */
-        private String ota;
-
-        /**
-         * 顾客标签/备注
-         */
-        private String guestRemark;
-
         // Getters and Setters
-
-        public Integer getMealType() {
-            return mealType;
-        }
-
-        public void setMealType(Integer mealType) {
-            this.mealType = mealType;
-        }
-
-        public Integer getMealCount() {
-            return mealCount;
-        }
-
-        public void setMealCount(Integer mealCount) {
-            this.mealCount = mealCount;
-        }
-
-        public String getContactName() {
-            return contactName;
-        }
-
-        public void setContactName(String contactName) {
-            this.contactName = contactName;
-        }
-
-        public String getContactPhone() {
-            return contactPhone;
-        }
-
-        public void setContactPhone(String contactPhone) {
-            this.contactPhone = contactPhone;
-        }
-
-        public String getContactMail() {
-            return contactMail;
-        }
-
-        public void setContactMail(String contactMail) {
-            this.contactMail = contactMail;
-        }
-
-        public String getFax() {
-            return fax;
-        }
-
-        public void setFax(String fax) {
-            this.fax = fax;
-        }
-
-        public Integer getGuests() {
-            return guests;
-        }
-
-        public void setGuests(Integer guests) {
-            this.guests = guests;
-        }
 
         public Integer getGuestType() {
             return guestType;
@@ -661,31 +451,6 @@ public class CreateOrderRequest {
 
         public void setGuestType(Integer guestType) {
             this.guestType = guestType;
-        }
-
-        public Integer getAge() {
-            return age;
-        }
-
-        public void setAge(Integer age) {
-            this.age = age;
-        }
-
-        public Integer getGuestIdType() {
-            return guestIdType;
-        }
-
-        public void setGuestIdType(Integer guestIdType) {
-            this.guestIdType = guestIdType;
-        }
-
-        public Integer getIdType() {
-            return idType != null ? idType : guestIdType;
-        }
-
-        public void setIdType(Integer idType) {
-            this.idType = idType;
-            this.guestIdType = idType;
         }
 
         public String getGuestName() {
@@ -712,354 +477,28 @@ public class CreateOrderRequest {
             this.guestLastName = guestLastName;
         }
 
-        public String getGuestIdNo() {
-            return guestIdNo;
+        public Integer getAge() {
+            return age;
         }
 
-        public void setGuestIdNo(String guestIdNo) {
-            this.guestIdNo = guestIdNo;
+        public void setAge(Integer age) {
+            this.age = age;
+        }
+
+        public Integer getIdType() {
+            return idType;
+        }
+
+        public void setIdType(Integer idType) {
+            this.idType = idType;
         }
 
         public String getIdNo() {
-            return idNo != null ? idNo : guestIdNo;
+            return idNo;
         }
 
         public void setIdNo(String idNo) {
             this.idNo = idNo;
-            this.guestIdNo = idNo;
-        }
-
-        public String getGuestPhone() {
-            return guestPhone;
-        }
-
-        public void setGuestPhone(String guestPhone) {
-            this.guestPhone = guestPhone;
-        }
-
-        public String getOta() {
-            return ota;
-        }
-
-        public void setOta(String ota) {
-            this.ota = ota;
-        }
-
-        public String getGuestRemark() {
-            return guestRemark;
-        }
-
-        public void setGuestRemark(String guestRemark) {
-            this.guestRemark = guestRemark;
-        }
-    }
-
-    /**
-     * 每日明细
-     */
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class DailyInfo {
-
-        /**
-         * 房间序号
-         */
-        private String roomName;
-
-        /**
-         * 房间序号
-         */
-        private Integer roomNo;
-
-        /**
-         * 入住日期
-         */
-        private String checkDate;
-
-        /**
-         * 价格；格式为 yyyy-MM-dd
-         */
-        private BigDecimal rate;
-
-        /**
-         * 结算价格
-         */
-        private BigDecimal settleRate;
-
-        /**
-         * 底价类型/结算方式；底价结算: 1，卖价扣点: 0
-         */
-        private Integer basePriceSettleType;
-
-        /**
-         * 底价取消时间戳
-         */
-        private String basePriceSettleTime;
-
-        /**
-         * 底价/扣点后的价格
-         */
-        private String costOrDeductRate;
-
-        /**
-         * 底价取消时间戳；Unix时间戳
-         */
-        private String basePriceCancelTime;
-
-        /**
-         * 币种；默认：CNY
-         */
-        private String currency;
-
-        /**
-         * 备注
-         */
-        private String remark;
-
-        /**
-         * 客户外部渠道房价
-         */
-        private BigDecimal outerChannelRate;
-
-        /**
-         * 每日明细扩展
-         */
-        private DailyInfoExt dailyInfoExt;
-
-        // Getters and Setters
-
-        public String getRoomName() {
-            return roomName;
-        }
-
-        public void setRoomName(String roomName) {
-            this.roomName = roomName;
-        }
-
-        public Integer getRoomNo() {
-            return roomNo;
-        }
-
-        public void setRoomNo(Integer roomNo) {
-            this.roomNo = roomNo;
-        }
-
-        public String getCheckDate() {
-            return checkDate;
-        }
-
-        public void setCheckDate(String checkDate) {
-            this.checkDate = checkDate;
-        }
-
-        public BigDecimal getRate() {
-            return rate;
-        }
-
-        public void setRate(BigDecimal rate) {
-            this.rate = rate;
-        }
-
-        public BigDecimal getSettleRate() {
-            return settleRate;
-        }
-
-        public void setSettleRate(BigDecimal settleRate) {
-            this.settleRate = settleRate;
-        }
-
-        public Integer getBasePriceSettleType() {
-            return basePriceSettleType;
-        }
-
-        public void setBasePriceSettleType(Integer basePriceSettleType) {
-            this.basePriceSettleType = basePriceSettleType;
-        }
-
-        public String getBasePriceSettleTime() {
-            return basePriceSettleTime;
-        }
-
-        public void setBasePriceSettleTime(String basePriceSettleTime) {
-            this.basePriceSettleTime = basePriceSettleTime;
-        }
-
-        public String getCostOrDeductRate() {
-            return costOrDeductRate;
-        }
-
-        public void setCostOrDeductRate(String costOrDeductRate) {
-            this.costOrDeductRate = costOrDeductRate;
-        }
-
-        public String getBasePriceCancelTime() {
-            return basePriceCancelTime;
-        }
-
-        public void setBasePriceCancelTime(String basePriceCancelTime) {
-            this.basePriceCancelTime = basePriceCancelTime;
-        }
-
-        public String getCurrency() {
-            return currency;
-        }
-
-        public void setCurrency(String currency) {
-            this.currency = currency;
-        }
-
-        public String getRemark() {
-            return remark;
-        }
-
-        public void setRemark(String remark) {
-            this.remark = remark;
-        }
-
-        public BigDecimal getOuterChannelRate() {
-            return outerChannelRate;
-        }
-
-        public void setOuterChannelRate(BigDecimal outerChannelRate) {
-            this.outerChannelRate = outerChannelRate;
-        }
-
-        public DailyInfoExt getDailyInfoExt() {
-            return dailyInfoExt;
-        }
-
-        public void setDailyInfoExt(DailyInfoExt dailyInfoExt) {
-            this.dailyInfoExt = dailyInfoExt;
-        }
-    }
-
-    /**
-     * 每日明细扩展
-     */
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class DailyInfoExt {
-
-        /**
-         * 餐食类型
-         */
-        private Integer mealType;
-
-        /**
-         * 餐食份数
-         */
-        private Integer mealCount;
-
-        /**
-         * 预定确认类型
-         */
-        private Integer bookingConfirmType;
-
-        // Getters and Setters
-
-        public Integer getMealType() {
-            return mealType;
-        }
-
-        public void setMealType(Integer mealType) {
-            this.mealType = mealType;
-        }
-
-        public Integer getMealCount() {
-            return mealCount;
-        }
-
-        public void setMealCount(Integer mealCount) {
-            this.mealCount = mealCount;
-        }
-
-        public Integer getBookingConfirmType() {
-            return bookingConfirmType;
-        }
-
-        public void setBookingConfirmType(Integer bookingConfirmType) {
-            this.bookingConfirmType = bookingConfirmType;
-        }
-    }
-
-    /**
-     * 联系人信息
-     */
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Contact {
-
-        /**
-         * 联系人姓名
-         */
-        private String name;
-
-        /**
-         * 联系人电话
-         */
-        private String phone;
-
-        /**
-         * 联系人邮箱
-         */
-        private String email;
-
-        // Getters and Setters
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-    }
-
-    /**
-     * 发票信息
-     */
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Invoice {
-
-        /**
-         * 发票类型
-         */
-        private Integer invoiceType;
-
-        /**
-         * 发票抬头
-         */
-        private String invoiceTitle;
-
-        // Getters and Setters
-
-        public Integer getInvoiceType() {
-            return invoiceType;
-        }
-
-        public void setInvoiceType(Integer invoiceType) {
-            this.invoiceType = invoiceType;
-        }
-
-        public String getInvoiceTitle() {
-            return invoiceTitle;
-        }
-
-        public void setInvoiceTitle(String invoiceTitle) {
-            this.invoiceTitle = invoiceTitle;
         }
     }
 

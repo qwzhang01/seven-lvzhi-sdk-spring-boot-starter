@@ -559,20 +559,14 @@ public class LvzhiDrpApiIntegrationTest {
         request.setCount(1); // 预订数量
         request.setTotalAmount(new BigDecimal("300.00"));
         request.setPayAmount(new BigDecimal("300.00")); // 实付金额
-        // request.setDiscountAmount(new BigDecimal("0.00")); // 折扣金额
-        request.setSettleAmount(new BigDecimal("300.00"));
-        request.setPaymentType(2); // 预付
-        // request.setGuaranteeType(1); // 无担保
-        // request.setGuaranteeAmount(new BigDecimal("0.00"));
-        request.setOtherGuarantee("无额外担保要求");
-        request.setLatestArrivalTime("18:00");
+        request.setDiscountAmount(new BigDecimal("0.00")); // 折扣金额
+        request.setGuaranteeType(1); // 无担保
+        request.setGuaranteeAmount(new BigDecimal("0.00"));
         request.setRemark("测试订单，请勿实际处理");
         request.setCurrency("CNY"); // 币种
         request.setClientIp("192.168.1.100"); // 客户端IP
-        // request.setMemberNo("VIP001"); // 会员卡号
-        // request.setMemberLevel(1); // 会员等级
-        
-        // 新增字段（根据文档要求）
+        request.setMemberNo("VIP001"); // 会员卡号
+        request.setMemberLevel(1); // 会员等级
         request.setContactName("测试联系人");
         request.setContactPhone("13800138000");
         request.setContactEmail("contact@example.com");
@@ -585,27 +579,13 @@ public class LvzhiDrpApiIntegrationTest {
 
         // 入住人信息
         CreateOrderRequest.Guest guest = new CreateOrderRequest.Guest();
-        guest.setMealType(1); // 早餐
-        guest.setMealCount(2); // 2份早餐
-        guest.setContactName("测试联系人");
-        guest.setContactPhone("13800138000");
-        guest.setContactMail("test@example.com");
-        guest.setFax("010-12345678");
-        guest.setGuests(2); // 2人入住
         guest.setGuestType(0); // 成人
-        guest.setGuestIdType(0); // 身份证
         guest.setGuestName("测试用户");
         guest.setGuestFirstName("Test");
         guest.setGuestLastName("User");
-        guest.setGuestIdNo("142729198708231235");
-        guest.setGuestPhone("13800138000");
-        guest.setOta("携程");
-        guest.setGuestRemark("特殊要求：需要无烟房");
-
-        // 新增字段（根据文档要求）
         guest.setAge(38); // 年龄
-        guest.setIdType(0); // 证件类型（映射到guestIdType）
-        guest.setIdNo("142729198708231235"); // 证件号码（映射到guestIdNo）
+        guest.setIdType(0); // 证件类型
+        guest.setIdNo("142729198708231235"); // 证件号码
         
         request.setGuests(Collections.singletonList(guest));
         
@@ -631,50 +611,7 @@ public class LvzhiDrpApiIntegrationTest {
         orderDailyDetail.setMealType(1); // 早餐
         orderDailyDetail.setMealCount(2); // 2份早餐
         
-        ReserveValidateRequest.OrderDailyDetail orderDailyDetail2 = new ReserveValidateRequest.OrderDailyDetail();
-        orderDailyDetail2.setDate(checkOutDate);
-        orderDailyDetail2.setRate(new BigDecimal("300.00"));
-        orderDailyDetail2.setMealType(1); // 早餐
-        orderDailyDetail2.setMealCount(2); // 2份早餐
-        
-        request.setOrderDailyDetails(Arrays.asList(orderDailyDetail, orderDailyDetail2));
-
-        // 联系人信息
-        CreateOrderRequest.Contact contact = new CreateOrderRequest.Contact();
-        contact.setName("测试联系人");
-        contact.setPhone("13800138000");
-        contact.setEmail("contact@example.com");
-        request.setContact(contact);
-
-        // 发票信息
-        CreateOrderRequest.Invoice invoice = new CreateOrderRequest.Invoice();
-        invoice.setInvoiceType(1); // 增值税普通发票
-        invoice.setInvoiceTitle("测试公司");
-        request.setInvoice(invoice);
-
-        // 每日明细
-        CreateOrderRequest.DailyInfo dailyInfo = new CreateOrderRequest.DailyInfo();
-        dailyInfo.setRoomName("101");
-        dailyInfo.setRoomNo(1);
-        dailyInfo.setCheckDate(checkInDate);
-        dailyInfo.setRate(new BigDecimal("300.00"));
-        dailyInfo.setSettleRate(new BigDecimal("300.00"));
-        dailyInfo.setBasePriceSettleType(0); // 卖价扣点
-        dailyInfo.setBasePriceSettleTime("2024-01-01 12:00:00");
-        dailyInfo.setCostOrDeductRate("300.00");
-        dailyInfo.setBasePriceCancelTime("1704067200"); // Unix时间戳
-        dailyInfo.setCurrency("CNY");
-        dailyInfo.setRemark("测试每日明细");
-        dailyInfo.setOuterChannelRate(new BigDecimal("300.00"));
-        
-        // 每日明细扩展
-        CreateOrderRequest.DailyInfoExt dailyInfoExt = new CreateOrderRequest.DailyInfoExt();
-        dailyInfoExt.setMealType(1); // 早餐
-        dailyInfoExt.setMealCount(2); // 2份
-        dailyInfoExt.setBookingConfirmType(1); // 即时确认
-        dailyInfo.setDailyInfoExt(dailyInfoExt);
-        
-        request.setDailyInfos(Collections.singletonList(dailyInfo));
+        request.setOrderDailyDetails(Collections.singletonList(orderDailyDetail));
 
         // 取消规则
         CreateOrderRequest.CancelRule cancelRule = new CreateOrderRequest.CancelRule();

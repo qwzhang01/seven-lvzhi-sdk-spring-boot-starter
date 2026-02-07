@@ -19,9 +19,14 @@ public class OrderDetailInfo {
     private String drpOrderId;
 
     /**
-     * 分销商系统订单号
+     * 分销系统订单号（文档字段名：orderId）
      */
     private String outOrderId;
+
+    /**
+     * 分销系统订单号（文档字段名，映射到outOrderId）
+     */
+    private String orderId;
 
     /**
      * 酒店vid
@@ -44,6 +49,16 @@ public class OrderDetailInfo {
     private String roomTypeName;
 
     /**
+     * 产品ID
+     */
+    private Long productId;
+
+    /**
+     * 产品名称
+     */
+    private String productName;
+
+    /**
      * 入住日期，格式 yyyy-MM-dd
      */
     private String checkInDate;
@@ -54,9 +69,14 @@ public class OrderDetailInfo {
     private String checkOutDate;
 
     /**
-     * 入住天数，根据入离日期计算，checkOut - checkIn
+     * 入住天数，根据入离日期计算，checkOut - checkIn（文档字段名：days）
      */
     private Integer stayDays;
+
+    /**
+     * 间夜（文档字段名，映射到stayDays）
+     */
+    private Integer days;
 
     /**
      * 房间数
@@ -64,14 +84,44 @@ public class OrderDetailInfo {
     private Integer count;
 
     /**
-     * 总价
+     * 总金额
      */
     private BigDecimal totalAmount;
 
     /**
-     * 订单每日明细
+     * 实付金额
+     */
+    private BigDecimal payAmount;
+
+    /**
+     * 折扣金额
+     */
+    private BigDecimal discountAmount;
+
+    /**
+     * 支付类型(0: 未知 1. 现付 2.预付)
+     */
+    private Integer paymentType;
+
+    /**
+     * 担保类型；担保金类型；0: 默认值(无意义)；1:无担保；2:首晚担保；3:全额担保
+     */
+    private Integer guaranteeType;
+
+    /**
+     * 担保金额
+     */
+    private BigDecimal guaranteeAmount;
+
+    /**
+     * 订单每日明细（内部字段名）
      */
     private List<OrderDailyInfo> orderDailyInfos;
+
+    /**
+     * 订单每日明细集合（文档字段名，映射到orderDailyInfos）
+     */
+    private List<OrderDailyDetail> orderDailyDetails;
 
     /**
      * 到店时间，最早/最晚，格式 HH:mm
@@ -109,6 +159,16 @@ public class OrderDetailInfo {
     private String contactEmail;
 
     /**
+     * 会员卡号
+     */
+    private String memberNo;
+
+    /**
+     * 会员等级
+     */
+    private String memberLevel;
+
+    /**
      * 订单状态
      * 1-待确认、2-已确认、3-已取消、4-已拒绝、5-已完成、6-取消中、7-NoShow
      */
@@ -120,9 +180,39 @@ public class OrderDetailInfo {
     private String confirmNo;
 
     /**
-     * 取消政策
+     * 取消规则
      */
     private CancelRule cancelRule;
+
+    /**
+     * 最晚保留时间类型；0:当天；1:次日
+     */
+    private Integer latestReservationTimeType;
+
+    /**
+     * 最晚保留时间；eg:18:00
+     */
+    private String latestReservationTime;
+
+    /**
+     * 最早到店时间；yyyy-MM-dd HH:mm:ss
+     */
+    private String earlyArrivalTime;
+
+    /**
+     * 最晚到店时间；yyyy-MM-dd HH:mm:ss
+     */
+    private String lastArrivalTime;
+
+    /**
+     * 用户备注信息
+     */
+    private String guestNoticeInfo;
+
+    /**
+     * 用户开票信息
+     */
+    private String guestInvoiceInfo;
 
     /**
      * 取消/拒绝原因
@@ -191,6 +281,15 @@ public class OrderDetailInfo {
         this.outOrderId = outOrderId;
     }
 
+    public String getOrderId() {
+        return orderId != null ? orderId : outOrderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+        this.outOrderId = orderId;
+    }
+
     public Long getHotelVid() {
         return hotelVid;
     }
@@ -223,6 +322,22 @@ public class OrderDetailInfo {
         this.roomTypeName = roomTypeName;
     }
 
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
     public String getCheckInDate() {
         return checkInDate;
     }
@@ -247,6 +362,15 @@ public class OrderDetailInfo {
         this.stayDays = stayDays;
     }
 
+    public Integer getDays() {
+        return days != null ? days : stayDays;
+    }
+
+    public void setDays(Integer days) {
+        this.days = days;
+        this.stayDays = days;
+    }
+
     public Integer getCount() {
         return count;
     }
@@ -263,12 +387,60 @@ public class OrderDetailInfo {
         this.totalAmount = totalAmount;
     }
 
+    public BigDecimal getPayAmount() {
+        return payAmount;
+    }
+
+    public void setPayAmount(BigDecimal payAmount) {
+        this.payAmount = payAmount;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public Integer getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(Integer paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public Integer getGuaranteeType() {
+        return guaranteeType;
+    }
+
+    public void setGuaranteeType(Integer guaranteeType) {
+        this.guaranteeType = guaranteeType;
+    }
+
+    public BigDecimal getGuaranteeAmount() {
+        return guaranteeAmount;
+    }
+
+    public void setGuaranteeAmount(BigDecimal guaranteeAmount) {
+        this.guaranteeAmount = guaranteeAmount;
+    }
+
     public List<OrderDailyInfo> getOrderDailyInfos() {
         return orderDailyInfos;
     }
 
     public void setOrderDailyInfos(List<OrderDailyInfo> orderDailyInfos) {
         this.orderDailyInfos = orderDailyInfos;
+    }
+
+    public List<OrderDailyDetail> getOrderDailyDetails() {
+        return orderDailyDetails;
+    }
+
+    public void setOrderDailyDetails(List<OrderDailyDetail> orderDailyDetails) {
+        this.orderDailyDetails = orderDailyDetails;
     }
 
     public String getArriveStartTime() {
@@ -327,6 +499,22 @@ public class OrderDetailInfo {
         this.contactEmail = contactEmail;
     }
 
+    public String getMemberNo() {
+        return memberNo;
+    }
+
+    public void setMemberNo(String memberNo) {
+        this.memberNo = memberNo;
+    }
+
+    public String getMemberLevel() {
+        return memberLevel;
+    }
+
+    public void setMemberLevel(String memberLevel) {
+        this.memberLevel = memberLevel;
+    }
+
     public Integer getState() {
         return state;
     }
@@ -349,6 +537,54 @@ public class OrderDetailInfo {
 
     public void setCancelRule(CancelRule cancelRule) {
         this.cancelRule = cancelRule;
+    }
+
+    public Integer getLatestReservationTimeType() {
+        return latestReservationTimeType;
+    }
+
+    public void setLatestReservationTimeType(Integer latestReservationTimeType) {
+        this.latestReservationTimeType = latestReservationTimeType;
+    }
+
+    public String getLatestReservationTime() {
+        return latestReservationTime;
+    }
+
+    public void setLatestReservationTime(String latestReservationTime) {
+        this.latestReservationTime = latestReservationTime;
+    }
+
+    public String getEarlyArrivalTime() {
+        return earlyArrivalTime;
+    }
+
+    public void setEarlyArrivalTime(String earlyArrivalTime) {
+        this.earlyArrivalTime = earlyArrivalTime;
+    }
+
+    public String getLastArrivalTime() {
+        return lastArrivalTime;
+    }
+
+    public void setLastArrivalTime(String lastArrivalTime) {
+        this.lastArrivalTime = lastArrivalTime;
+    }
+
+    public String getGuestNoticeInfo() {
+        return guestNoticeInfo;
+    }
+
+    public void setGuestNoticeInfo(String guestNoticeInfo) {
+        this.guestNoticeInfo = guestNoticeInfo;
+    }
+
+    public String getGuestInvoiceInfo() {
+        return guestInvoiceInfo;
+    }
+
+    public void setGuestInvoiceInfo(String guestInvoiceInfo) {
+        this.guestInvoiceInfo = guestInvoiceInfo;
     }
 
     public String getReason() {
@@ -526,6 +762,67 @@ public class OrderDetailInfo {
     }
 
     /**
+     * 订单每日明细（文档字段名）
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class OrderDailyDetail {
+
+        /**
+         * 日期；yyyymmdd
+         */
+        private String date;
+
+        /**
+         * 价格
+         */
+        private BigDecimal rate;
+
+        /**
+         * 餐食类型；0: 未知；1:早餐；2 午餐；3:晚餐
+         */
+        private Integer mealType;
+
+        /**
+         * 餐食份数
+         */
+        private Integer mealCount;
+
+        // Getters and Setters
+
+        public String getDate() {
+            return date;
+        }
+
+        public void setDate(String date) {
+            this.date = date;
+        }
+
+        public BigDecimal getRate() {
+            return rate;
+        }
+
+        public void setRate(BigDecimal rate) {
+            this.rate = rate;
+        }
+
+        public Integer getMealType() {
+            return mealType;
+        }
+
+        public void setMealType(Integer mealType) {
+            this.mealType = mealType;
+        }
+
+        public Integer getMealCount() {
+            return mealCount;
+        }
+
+        public void setMealCount(Integer mealCount) {
+            this.mealCount = mealCount;
+        }
+    }
+
+    /**
      * 入住人信息
      */
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -561,6 +858,16 @@ public class OrderDetailInfo {
          * 年龄
          */
         private Integer age;
+
+        /**
+         * 证件类型 0:身份证 [目前只支持身份证]
+         */
+        private Integer idType;
+
+        /**
+         * 证件号码
+         */
+        private String idNo;
 
         // Getters and Setters
 
@@ -610,6 +917,22 @@ public class OrderDetailInfo {
 
         public void setAge(Integer age) {
             this.age = age;
+        }
+
+        public Integer getIdType() {
+            return idType;
+        }
+
+        public void setIdType(Integer idType) {
+            this.idType = idType;
+        }
+
+        public String getIdNo() {
+            return idNo;
+        }
+
+        public void setIdNo(String idNo) {
+            this.idNo = idNo;
         }
     }
 

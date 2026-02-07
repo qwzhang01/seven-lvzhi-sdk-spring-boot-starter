@@ -540,8 +540,8 @@ public class LvzhiDrpApiIntegrationTest {
         String requestUrl = baseUrl + apiMethod.getUrl();
 
         // 如果没有获取到roomTypeId和productId，跳过此测试
-        Long testRoomTypeId = roomTypeId != null ? roomTypeId : 1L;
-        Long testProductId = productId != null ? productId : 1L;
+        Long testRoomTypeId = roomTypeId != null ? roomTypeId : 117586L;
+        Long testProductId = productId != null ? productId : 846836L;
 
         String checkInDate = LocalDate.now().plusDays(7).format(DATE_FORMATTER);
         String checkOutDate = LocalDate.now().plusDays(8).format(DATE_FORMATTER);
@@ -556,22 +556,21 @@ public class LvzhiDrpApiIntegrationTest {
         request.setProductId(testProductId);
         request.setCheckInDate(checkInDate);
         request.setCheckOutDate(checkOutDate);
-        request.setRoomCount(1);
         request.setCount(1); // 预订数量
         request.setTotalAmount(new BigDecimal("300.00"));
         request.setPayAmount(new BigDecimal("300.00")); // 实付金额
-        request.setDiscountAmount(new BigDecimal("0.00")); // 折扣金额
+        // request.setDiscountAmount(new BigDecimal("0.00")); // 折扣金额
         request.setSettleAmount(new BigDecimal("300.00"));
         request.setPaymentType(2); // 预付
-        request.setGuaranteeType(1); // 无担保
-        request.setGuaranteeAmount(new BigDecimal("0.00"));
+        // request.setGuaranteeType(1); // 无担保
+        // request.setGuaranteeAmount(new BigDecimal("0.00"));
         request.setOtherGuarantee("无额外担保要求");
         request.setLatestArrivalTime("18:00");
         request.setRemark("测试订单，请勿实际处理");
         request.setCurrency("CNY"); // 币种
         request.setClientIp("192.168.1.100"); // 客户端IP
-        request.setMemberNo("VIP001"); // 会员卡号
-        request.setMemberLevel(1); // 会员等级
+        // request.setMemberNo("VIP001"); // 会员卡号
+        // request.setMemberLevel(1); // 会员等级
         
         // 新增字段（根据文档要求）
         request.setContactName("测试联系人");
@@ -598,15 +597,15 @@ public class LvzhiDrpApiIntegrationTest {
         guest.setGuestName("测试用户");
         guest.setGuestFirstName("Test");
         guest.setGuestLastName("User");
-        guest.setGuestIdNo("110101199001011234");
+        guest.setGuestIdNo("142729198708231235");
         guest.setGuestPhone("13800138000");
         guest.setOta("携程");
         guest.setGuestRemark("特殊要求：需要无烟房");
-        
+
         // 新增字段（根据文档要求）
-        guest.setAge(30); // 年龄
+        guest.setAge(38); // 年龄
         guest.setIdType(0); // 证件类型（映射到guestIdType）
-        guest.setIdNo("110101199001011234"); // 证件号码（映射到guestIdNo）
+        guest.setIdNo("142729198708231235"); // 证件号码（映射到guestIdNo）
         
         request.setGuests(Collections.singletonList(guest));
         

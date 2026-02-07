@@ -55,7 +55,7 @@ public class RoomTypeDetail {
     /**
      * 面积
      */
-    private Long area;
+    private String area;
 
     /**
      * 宽带类型：
@@ -161,11 +161,11 @@ public class RoomTypeDetail {
         this.floor = floor;
     }
 
-    public Long getArea() {
+    public String getArea() {
         return area;
     }
 
-    public void setArea(Long area) {
+    public void setArea(String area) {
         this.area = area;
     }
 

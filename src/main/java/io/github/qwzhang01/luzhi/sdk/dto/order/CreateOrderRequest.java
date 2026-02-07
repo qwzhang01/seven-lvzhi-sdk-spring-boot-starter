@@ -44,11 +44,6 @@ public class CreateOrderRequest {
     private String checkOutDate;
 
     /**
-     * 房间数量
-     */
-    private Integer roomCount;
-
-    /**
      * 预订数量
      */
     private Integer count;
@@ -251,14 +246,6 @@ public class CreateOrderRequest {
 
     public void setCheckOutDate(String checkOutDate) {
         this.checkOutDate = checkOutDate;
-    }
-
-    public Integer getRoomCount() {
-        return roomCount;
-    }
-
-    public void setRoomCount(Integer roomCount) {
-        this.roomCount = roomCount;
     }
 
     public Integer getCount() {

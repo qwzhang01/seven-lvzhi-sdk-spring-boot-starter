@@ -565,8 +565,8 @@ public class LvzhiDrpApiIntegrationTest {
         request.setRemark("测试订单，请勿实际处理");
         request.setCurrency("CNY"); // 币种
         request.setClientIp("192.168.1.100"); // 客户端IP
-        request.setMemberNo("VIP001"); // 会员卡号
-        request.setMemberLevel(1); // 会员等级
+//        request.setMemberNo("VIP001"); // 会员卡号
+//        request.setMemberLevel(1); // 会员等级
         request.setContactName("测试联系人");
         request.setContactPhone("13800138000");
         request.setContactEmail("contact@example.com");
@@ -602,7 +602,7 @@ public class LvzhiDrpApiIntegrationTest {
         guestBenefit2.setEffectDate(LocalDate.now().plusDays(7).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         guestBenefit2.setBenefitDesc("双人免费早餐");
         
-        request.setGuestBenefits(Arrays.asList(guestBenefit, guestBenefit2));
+//        request.setGuestBenefits(Arrays.asList(guestBenefit, guestBenefit2));
 
         // 订单每日明细集合
         ReserveValidateRequest.OrderDailyDetail orderDailyDetail = new ReserveValidateRequest.OrderDailyDetail();
@@ -621,7 +621,7 @@ public class LvzhiDrpApiIntegrationTest {
         //cancelRule.setCancelTimeAgo("");
         //cancelRule.setCancelHoursAgo(6); // 入住前6小时
         //cancelRule.setDeductionType(0); // 不扣费
-        request.setCancelRule(cancelRule);
+//        request.setCancelRule(cancelRule);
 
         BaseResponse<CreateOrderResponse> response = orderService.create(request);
 

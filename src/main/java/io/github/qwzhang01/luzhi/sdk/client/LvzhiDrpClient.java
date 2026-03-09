@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties;
+import io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpDynamicConfig;
 import io.github.qwzhang01.luzhi.sdk.common.ApiMethod;
 import io.github.qwzhang01.luzhi.sdk.common.BaseResponse;
 import io.github.qwzhang01.luzhi.sdk.dto.auth.GetTokenRequest;
@@ -53,6 +54,68 @@ public class LvzhiDrpClient {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.objectMapper.registerModule(new JavaTimeModule());
+    }
+
+    /**
+     * 新的构造函数：支持动态注入配置参数
+     */
+    public LvzhiDrpClient(CloseableHttpClient httpClient,
+                          String baseUrl,
+                          String clientId,
+                          String clientSecret,
+                          String secretKey,
+                          String version) {
+        this.httpClient = httpClient;
+        this.properties = createPropertiesFromParams(baseUrl, clientId, clientSecret, secretKey, version);
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.objectMapper.registerModule(new JavaTimeModule());
+    }
+
+    /**
+     * 新的构造函数：支持通过LvzhiDrpDynamicConfig配置类注入参数
+     */
+    public LvzhiDrpClient(CloseableHttpClient httpClient,
+                          LvzhiDrpDynamicConfig dynamicConfig) {
+        this.httpClient = httpClient;
+        this.properties = createPropertiesFromDynamicConfig(dynamicConfig);
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.objectMapper.registerModule(new JavaTimeModule());
+    }
+
+    /**
+     * 根据参数创建Properties对象
+     */
+    private LvzhiDrpProperties createPropertiesFromParams(String baseUrl, String clientId, String clientSecret, String secretKey, String version) {
+        LvzhiDrpProperties properties = new LvzhiDrpProperties();
+        if (baseUrl != null) {
+            properties.setBaseUrl(baseUrl);
+        }
+        properties.setClientId(clientId);
+        properties.setClientSecret(clientSecret);
+        properties.setSecretKey(secretKey);
+        if (version != null) {
+            properties.setVersion(version);
+        }
+        return properties;
+    }
+
+    /**
+     * 根据动态配置类创建Properties对象
+     */
+    private LvzhiDrpProperties createPropertiesFromDynamicConfig(LvzhiDrpDynamicConfig dynamicConfig) {
+        LvzhiDrpProperties properties = new LvzhiDrpProperties();
+        if (dynamicConfig.getBaseUrl() != null) {
+            properties.setBaseUrl(dynamicConfig.getBaseUrl());
+        }
+        properties.setClientId(dynamicConfig.getClientId());
+        properties.setClientSecret(dynamicConfig.getClientSecret());
+        properties.setSecretKey(dynamicConfig.getSecretKey());
+        if (dynamicConfig.getVersion() != null) {
+            properties.setVersion(dynamicConfig.getVersion());
+        }
+        return properties;
     }
 
     /**

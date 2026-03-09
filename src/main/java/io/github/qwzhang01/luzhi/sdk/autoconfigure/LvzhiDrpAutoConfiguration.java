@@ -2,6 +2,7 @@ package io.github.qwzhang01.luzhi.sdk.autoconfigure;
 
 import io.github.qwzhang01.luzhi.sdk.client.LvzhiDrpClient;
 import io.github.qwzhang01.luzhi.sdk.service.*;
+import io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpDynamicConfig;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
@@ -77,13 +78,46 @@ public class LvzhiDrpAutoConfiguration {
     }
 
     /**
-     * 配置API客户端
+     * 配置API客户端（配置文件方式）
      */
     @Bean
     @ConditionalOnMissingBean
     public LvzhiDrpClient lvzhiDrpClient(CloseableHttpClient lvzhiDrpHttpClient, LvzhiDrpProperties properties) {
-        logger.info("初始化旅智DRP API客户端 - 基础URL: {}", properties.getBaseUrl());
+        logger.info("初始化旅智DRP API客户端（配置文件方式） - 基础URL: {}", properties.getBaseUrl());
         return new LvzhiDrpClient(lvzhiDrpHttpClient, properties);
+    }
+
+    /**
+     * 配置API客户端（动态注入方式）
+     * 使用此方法可以绕过配置文件，直接通过参数注入配置
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "lvzhiDrpClientDynamic")
+    public LvzhiDrpClient lvzhiDrpClientDynamic(CloseableHttpClient lvzhiDrpHttpClient,
+                                                String baseUrl,
+                                                String clientId,
+                                                String clientSecret,
+                                                String secretKey,
+                                                String version) {
+        logger.info("初始化旅智DRP API客户端（动态注入方式） - 基础URL: {}", baseUrl != null ? baseUrl : "使用默认URL");
+        return new LvzhiDrpClient(lvzhiDrpHttpClient, baseUrl, clientId, clientSecret, secretKey, version);
+    }
+
+    /**
+     * 配置API客户端（配置类方式）
+     * 使用配置类来注入参数，更符合Spring编程习惯
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "lvzhiDrpClientFromConfig")
+    public LvzhiDrpClient lvzhiDrpClientFromConfig(CloseableHttpClient lvzhiDrpHttpClient,
+                                                   LvzhiDrpDynamicConfig dynamicConfig) {
+        logger.info("初始化旅智DRP API客户端（配置类方式） - 基础URL: {}", dynamicConfig.getBaseUrl() != null ? dynamicConfig.getBaseUrl() : "使用默认URL");
+        return new LvzhiDrpClient(lvzhiDrpHttpClient,
+                dynamicConfig.getBaseUrl(),
+                dynamicConfig.getClientId(),
+                dynamicConfig.getClientSecret(),
+                dynamicConfig.getSecretKey(),
+                dynamicConfig.getVersion());
     }
 
     // ==================== 授权接口 ====================

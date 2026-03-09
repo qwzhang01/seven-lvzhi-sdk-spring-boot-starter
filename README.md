@@ -247,6 +247,116 @@ public void getOrderDetail(String orderNo) {
 
 ## 🔧 高级配置
 
+### 配置方式说明
+
+本SDK支持三种不同的配置初始化方式，您可以根据实际需求选择最适合的方式。
+
+#### 1. 配置文件方式（推荐）
+
+这是最常用的方式，通过application.yml或application.properties文件进行配置。
+
+##### application.yml配置示例：
+```yaml
+lvzhi:
+  drp:
+    base-url: https://open.zktapi.com/drp
+    client-id: your-client-id
+    client-secret: your-client-secret
+    secret-key: your-secret-key
+    version: V1.0.0
+    http-client:
+      max-conn-total: 200
+      max-conn-per-route: 50
+      connect-timeout: 5000
+      read-timeout: 30000
+      connection-request-timeout: 5000
+```
+
+##### 使用方式：
+```java
+@Autowired
+private LvzhiDrpClient lvzhiDrpClient; // 自动注入默认的客户端
+```
+
+#### 2. 动态注入方式
+
+当您需要从数据库或其他动态源获取配置时使用此方式。
+
+##### 使用方式：
+```java
+@Configuration
+public class DynamicConfig {
+    
+    @Bean(name = "lvzhiDrpClientDynamic")
+    public LvzhiDrpClient lvzhiDrpClientDynamic(
+            CloseableHttpClient lvzhiDrpHttpClient,
+            @Value("${custom.base-url}") String baseUrl,
+            @Value("${custom.client-id}") String clientId,
+            @Value("${custom.client-secret}") String clientSecret,
+            @Value("${custom.secret-key}") String secretKey,
+            @Value("${custom.version}") String version) {
+        return new LvzhiDrpClient(lvzhiDrpHttpClient, baseUrl, clientId, clientSecret, secretKey, version);
+    }
+}
+```
+
+##### 注入使用：
+```java
+@Autowired
+@Qualifier("lvzhiDrpClientDynamic")
+private LvzhiDrpClient lvzhiDrpClient;
+```
+
+#### 3. 配置类方式
+
+当您需要更灵活地管理配置，或者配置参数来自多个来源时使用此方式。
+
+##### 创建配置类：
+```java
+@Component
+public class MyDynamicConfig extends LvzhiDrpDynamicConfig {
+    
+    @Value("${database.base-url}")
+    private String databaseBaseUrl;
+    
+    @Value("${redis.client-id}")
+    private String redisClientId;
+    
+    // 覆盖getter方法，实现自定义逻辑
+    @Override
+    public String getBaseUrl() {
+        return databaseBaseUrl != null ? databaseBaseUrl : super.getBaseUrl();
+    }
+    
+    @Override
+    public String getClientId() {
+        return redisClientId != null ? redisClientId : super.getClientId();
+    }
+}
+```
+
+##### 使用方式：
+```java
+@Autowired
+@Qualifier("lvzhiDrpClientFromConfig")
+private LvzhiDrpClient lvzhiDrpClient;
+```
+
+#### 配置方式对比
+
+| 方式 | 适用场景 | 优点 | 缺点 |
+|------|----------|------|------|
+| 配置文件方式 | 配置相对固定，不需要频繁变更 | 简单易用，符合Spring Boot习惯 | 配置变更需要重启应用 |
+| 动态注入方式 | 配置需要从外部系统动态获取 | 灵活，支持运行时配置变更 | 需要手动管理配置来源 |
+| 配置类方式 | 复杂配置场景，多数据源配置 | 高度灵活，支持复杂逻辑 | 实现相对复杂 |
+
+#### 注意事项
+
+1. 三种方式可以共存，但建议选择一种主要方式使用
+2. 如果同时存在多个LvzhiDrpClient实例，需要使用@Qualifier指定具体的bean名称
+3. 配置类方式需要确保LvzhiDrpDynamicConfig的实例在Spring容器中存在
+4. HTTP客户端配置对所有方式都适用，统一由LvzhiDrpProperties中的httpClient配置管理
+
 ### 自定义 HTTP 客户端
 
 如果需要自定义 HTTP 客户端配置，可以通过 Bean 覆盖：

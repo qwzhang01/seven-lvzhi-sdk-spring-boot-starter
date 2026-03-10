@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 旅智分销平台API自动配置类
@@ -81,13 +82,27 @@ public class LvzhiDrpAutoConfiguration {
     }
 
     /**
-     * 配置API客户端
+     * 配置API客户端（使用Redis缓存）
+     */
+    @Bean
+    @ConditionalOnBean({LvzhiDrpProperties.class, RedisTemplate.class})
+    @ConditionalOnMissingBean
+    public LvzhiDrpClient lvzhiDrpClient(CloseableHttpClient lvzhiDrpHttpClient,
+                                                   LvzhiDrpProperties properties,
+                                                   RedisTemplate<String, Object> redisTemplate) {
+        logger.info("初始化旅智DRP API客户端（使用Redis缓存） - 基础URL: {}",
+                properties.getBaseUrl());
+        return new LvzhiDrpClient(lvzhiDrpHttpClient, properties, redisTemplate);
+    }
+
+    /**
+     * 配置API客户端（使用本地缓存）
      */
     @Bean
     @ConditionalOnBean(LvzhiDrpProperties.class)
     @ConditionalOnMissingBean
     public LvzhiDrpClient lvzhiDrpClient(CloseableHttpClient lvzhiDrpHttpClient, LvzhiDrpProperties properties) {
-        logger.info("初始化旅智DRP API客户端 - 基础URL: {}",
+        logger.info("初始化旅智DRP API客户端（使用本地缓存） - 基础URL: {}",
                 properties.getBaseUrl());
         return new LvzhiDrpClient(lvzhiDrpHttpClient, properties);
     }

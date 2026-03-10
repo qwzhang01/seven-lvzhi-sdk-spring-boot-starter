@@ -40,6 +40,11 @@ public class LvzhiDrpProperties {
      */
     private HttpClientProperties httpClient = new HttpClientProperties();
 
+    /**
+     * Redis缓存配置
+     */
+    private RedisCacheProperties redisCache = new RedisCacheProperties();
+
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -86,6 +91,14 @@ public class LvzhiDrpProperties {
 
     public void setHttpClient(HttpClientProperties httpClient) {
         this.httpClient = httpClient;
+    }
+
+    public RedisCacheProperties getRedisCache() {
+        return redisCache;
+    }
+
+    public void setRedisCache(RedisCacheProperties redisCache) {
+        this.redisCache = redisCache;
     }
 
     /**
@@ -155,6 +168,50 @@ public class LvzhiDrpProperties {
 
         public void setConnectionRequestTimeout(int connectionRequestTimeout) {
             this.connectionRequestTimeout = connectionRequestTimeout;
+        }
+    }
+
+    /**
+     * Redis缓存配置
+     */
+    public static class RedisCacheProperties {
+        /**
+         * 是否启用Redis缓存
+         */
+        private boolean enabled = false;
+
+        /**
+         * Redis缓存键前缀
+         */
+        private String keyPrefix = "lvzhi:drp:token:";
+
+        /**
+         * Token缓存过期时间（秒），默认24小时
+         */
+        private int expireTime = 86400;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getKeyPrefix() {
+            return keyPrefix;
+        }
+
+        public void setKeyPrefix(String keyPrefix) {
+            this.keyPrefix = keyPrefix;
+        }
+
+        public int getExpireTime() {
+            return expireTime;
+        }
+
+        public void setExpireTime(int expireTime) {
+            this.expireTime = expireTime;
         }
     }
 }

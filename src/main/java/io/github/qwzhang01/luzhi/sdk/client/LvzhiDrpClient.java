@@ -19,6 +19,7 @@ import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -45,6 +46,8 @@ public class LvzhiDrpClient {
     private final ReentrantLock tokenLock = new ReentrantLock();
     private volatile String accessToken;
     private volatile long tokenExpireTime;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final boolean useRedisCache;
 
     public LvzhiDrpClient(CloseableHttpClient httpClient,
                           LvzhiDrpProperties properties) {
@@ -53,6 +56,8 @@ public class LvzhiDrpClient {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.objectMapper.registerModule(new JavaTimeModule());
+        this.redisTemplate = null;
+        this.useRedisCache = false;
     }
 
     /**
@@ -69,6 +74,27 @@ public class LvzhiDrpClient {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.objectMapper.registerModule(new JavaTimeModule());
+        this.redisTemplate = null;
+        this.useRedisCache = false;
+    }
+
+    /**
+     * 支持Redis缓存的构造函数
+     */
+    public LvzhiDrpClient(CloseableHttpClient httpClient,
+                          LvzhiDrpProperties properties,
+                          RedisTemplate<String, Object> redisTemplate) {
+        this.httpClient = httpClient;
+        this.properties = properties;
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.redisTemplate = redisTemplate;
+        this.useRedisCache = properties.getRedisCache().isEnabled() && redisTemplate != null;
+        
+        if (this.useRedisCache) {
+            logger.info("启用Redis缓存管理Token，缓存键前缀: {}", properties.getRedisCache().getKeyPrefix());
+        }
     }
 
     /**
@@ -94,6 +120,53 @@ public class LvzhiDrpClient {
      * @return 访问令牌
      */
     public String getValidAccessToken() {
+        if (useRedisCache) {
+            return getTokenFromRedis();
+        } else {
+            return getTokenFromLocal();
+        }
+    }
+
+    /**
+     * 从Redis获取Token
+     */
+    private String getTokenFromRedis() {
+        String cacheKey = getRedisCacheKey();
+        Object cachedToken = redisTemplate.opsForValue().get(cacheKey);
+        
+        if (cachedToken != null) {
+            logger.debug("从Redis缓存获取Token");
+            return cachedToken.toString();
+        }
+
+        // 缓存未命中，刷新Token
+        tokenLock.lock();
+        try {
+            // 双重检查
+            cachedToken = redisTemplate.opsForValue().get(cacheKey);
+            if (cachedToken != null) {
+                return cachedToken.toString();
+            }
+
+            // 刷新Token
+            TokenData tokenData = refreshToken();
+            String newToken = tokenData.getAccessToken();
+            
+            // 存储到Redis
+            redisTemplate.opsForValue().set(cacheKey, newToken, 
+                    java.time.Duration.ofSeconds(properties.getRedisCache().getExpireTime()));
+            
+            logger.info("Token刷新成功并存储到Redis，过期时间: {}秒", properties.getRedisCache().getExpireTime());
+            return newToken;
+        } finally {
+            tokenLock.unlock();
+        }
+    }
+
+    /**
+     * 从本地缓存获取Token
+     */
+    private String getTokenFromLocal() {
         if (accessToken != null && System.currentTimeMillis() < tokenExpireTime - TOKEN_REFRESH_BUFFER) {
             return accessToken;
         }
@@ -115,6 +188,13 @@ public class LvzhiDrpClient {
         } finally {
             tokenLock.unlock();
         }
+    }
+
+    /**
+     * 获取Redis缓存键
+     */
+    private String getRedisCacheKey() {
+        return properties.getRedisCache().getKeyPrefix() + properties.getClientId();
     }
 
     /**
@@ -296,8 +376,15 @@ public class LvzhiDrpClient {
     public void clearTokenCache() {
         tokenLock.lock();
         try {
-            this.accessToken = null;
-            this.tokenExpireTime = 0;
+            if (useRedisCache) {
+                String cacheKey = getRedisCacheKey();
+                redisTemplate.delete(cacheKey);
+                logger.info("已清除Redis中的Token缓存: {}", cacheKey);
+            } else {
+                this.accessToken = null;
+                this.tokenExpireTime = 0;
+                logger.info("已清除本地Token缓存");
+            }
         } finally {
             tokenLock.unlock();
         }

@@ -19,6 +19,7 @@
 - 🔧 **灵活配置**：支持自定义 HTTP 客户端、超时时间等配置
 - 📦 **类型安全**：提供完整的请求和响应 DTO 定义
 - 🛡️ **异常处理**：统一的异常处理机制
+- 🗄️ **Redis缓存支持**：支持Redis分布式缓存管理Token，提升多实例部署的稳定性
 
 ### 支持的 API 模块
 
@@ -36,6 +37,7 @@
 - JDK 17 或更高版本
 - Spring Boot 3.3.0 或更高版本
 - Maven 3.6+ 或 Gradle 7.0+
+- （可选）Redis 6.0+（如需使用Redis缓存功能）
 
 ## 🚀 快速开始
 
@@ -47,7 +49,7 @@
 <dependency>
     <groupId>io.github.qwzhang01</groupId>
     <artifactId>seven-lvzhi-sdk-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -56,7 +58,7 @@
 在 `build.gradle` 中添加依赖：
 
 ```gradle
-implementation 'io.github.qwzhang01:seven-lvzhi-sdk-spring-boot-starter:1.0.0'
+implementation 'io.github.qwzhang01:seven-lvzhi-sdk-spring-boot-starter:1.0.1'
 ```
 
 ### 配置文件
@@ -83,6 +85,11 @@ lvzhi:
       connection-request-timeout: 5000
       max-conn-total: 200
       max-conn-per-route: 50
+    # Redis缓存配置（可选）
+    redis-cache:
+      enabled: true
+      key-prefix: "lvzhi:drp:token:"
+      expire-time: 86400
 ```
 
 或使用 `application.properties`：
@@ -98,6 +105,116 @@ lvzhi.drp.http-client.read-timeout=30000
 lvzhi.drp.http-client.connection-request-timeout=5000
 lvzhi.drp.http-client.max-conn-total=200
 lvzhi.drp.http-client.max-conn-per-route=50
+lvzhi.drp.redis-cache.enabled=true
+lvzhi.drp.redis-cache.key-prefix=lvzhi:drp:token:
+lvzhi.drp.redis-cache.expire-time=86400
+```
+
+## 🗄️ Redis缓存功能
+
+### 功能特性
+
+- **智能缓存策略**：自动检测RedisTemplate，优先使用Redis缓存，无Redis时回退到本地缓存
+- **分布式支持**：多实例部署时Token共享，避免重复获取
+- **自动过期管理**：支持自定义缓存过期时间
+- **线程安全**：内置锁机制，防止并发问题
+- **无缝切换**：无需修改业务代码，自动适配缓存策略
+
+### 配置说明
+
+#### 启用Redis缓存
+
+要启用Redis缓存功能，需要满足以下条件：
+
+1. 在项目中引入Spring Data Redis依赖
+2. 配置Redis连接信息
+3. 在`lvzhi.drp.redis-cache.enabled`中设置为`true`
+
+#### Redis依赖配置
+
+在`pom.xml`中添加Redis依赖：
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
+
+#### Redis连接配置
+
+```yaml
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    password: your-redis-password
+    database: 0
+    timeout: 2000
+```
+
+### 缓存策略说明
+
+#### 1. Redis缓存优先
+当检测到RedisTemplate存在且Redis缓存启用时，优先使用Redis缓存：
+- Token存储在Redis中，键格式：`lvzhi:drp:token:{clientId}`
+- 支持多实例共享Token
+- 自动处理过期和刷新
+
+#### 2. 本地缓存回退
+当Redis不可用时，自动回退到本地缓存：
+- 使用内存变量存储Token
+- 单实例内有效
+- 应用重启后需要重新获取Token
+
+#### 3. 双重检查锁
+无论使用哪种缓存方式，都采用双重检查锁机制确保线程安全。
+
+### 使用示例
+
+#### 基本使用（无需修改代码）
+
+```java
+@Service
+public class HotelBookingService {
+    
+    @Autowired
+    private HotelService hotelService;
+    
+    public void getHotelInfo(Long hotelVid) {
+        // SDK会自动根据配置选择Redis缓存或本地缓存
+        BaseResponse<HotelDetailInfo> response = hotelService.getByVid(hotelVid);
+        // ...
+    }
+}
+```
+
+#### 手动清除缓存
+
+```java
+@Service
+public class TokenManagementService {
+    
+    @Autowired
+    private LvzhiDrpClient lvzhiDrpClient;
+    
+    public void forceRefreshToken() {
+        // 强制清除缓存，下次请求会重新获取Token
+        lvzhiDrpClient.clearTokenCache();
+    }
+}
+```
+
+### 缓存键格式
+
+Redis缓存使用以下键格式：
+```
+lvzhi:drp:token:{clientId}
+```
+
+例如，clientId为`test-app`时，缓存键为：
+```
+lvzhi:drp:token:test-app
 ```
 
 ### 使用示例
@@ -244,6 +361,9 @@ public void getOrderDetail(String orderNo) {
 | `lvzhi.drp.http-client.connection-request-timeout` | Integer | `5000` | 连接请求超时时间（毫秒） |
 | `lvzhi.drp.http-client.max-conn-total` | Integer | `200` | 最大连接数 |
 | `lvzhi.drp.http-client.max-conn-per-route` | Integer | `50` | 每个路由的最大连接数 |
+| `lvzhi.drp.redis-cache.enabled` | Boolean | `false` | 是否启用Redis缓存 |
+| `lvzhi.drp.redis-cache.key-prefix` | String | `lvzhi:drp:token:` | Redis缓存键前缀 |
+| `lvzhi.drp.redis-cache.expire-time` | Integer | `86400` | Token缓存过期时间（秒） |
 
 ## 🔧 高级配置
 
@@ -270,6 +390,10 @@ lvzhi:
       connect-timeout: 5000
       read-timeout: 30000
       connection-request-timeout: 5000
+    redis-cache:
+      enabled: true
+      key-prefix: "lvzhi:drp:token:"
+      expire-time: 86400
 ```
 
 ##### 使用方式：
@@ -425,6 +549,14 @@ mvn clean package
 感谢所有为本项目做出贡献的开发者！
 
 ## 📝 更新日志
+
+### v1.0.1 (2024-03-10)
+
+- ✨ **新增Redis缓存支持**：支持Redis分布式缓存管理Token
+- 🔄 **智能缓存策略**：自动检测RedisTemplate，优先使用Redis缓存
+- 🌐 **分布式支持**：多实例部署时Token共享
+- ⚡ **性能优化**：缓存自动过期管理，减少API调用
+- 🔒 **线程安全**：双重检查锁机制确保并发安全
 
 ### v1.0.0 (2024-02-08)
 

@@ -39,6 +39,8 @@ public class HotelNotifyRequest {
      *   <li>Product: 产品静态信息变化(包含产品静态信息、取消规则、预订规则、价格方案变化)</li>
      *   <li>Hotel: 酒店静态信息变化</li>
      * </ul>
+     *
+     * @see HotelChangeType
      */
     private String hotelChangeType;
 

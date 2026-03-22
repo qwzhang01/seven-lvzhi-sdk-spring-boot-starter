@@ -173,7 +173,7 @@ public final class SignatureUtil {
      * @param data 待加密数据
      * @return MD5值（小写）
      */
-    public static String md5(String data) {
+    private static String md5(String data) {
         try {
             MessageDigest md = MessageDigest.getInstance(MD5);
             md.update(data.getBytes(StandardCharsets.UTF_8));
@@ -186,5 +186,57 @@ public final class SignatureUtil {
         } catch (NoSuchAlgorithmException e) {
             throw new LvzhiDrpException("MD5算法不可用", e);
         }
+    }
+
+
+    /**
+     * 验证Authorization头中的MD5加密信息
+     * <p>
+     * 将提供的用户名和密码拼接后计算MD5，与Authorization头中的MD5值进行比对
+     *
+     * @param authorizationHeader Authorization头内容
+     * @param username            用户名
+     * @param password            密码
+     * @return 验证是否通过
+     */
+    public static boolean validateAuthorization(String authorizationHeader,
+                                                String username,
+                                                String password) {
+        if (authorizationHeader == null || username == null || password == null) {
+            return false;
+        }
+
+        String expectedMd5 = generateAuthorizationHeader(username, password);
+
+        // 比对MD5值
+        boolean isValid = expectedMd5.equalsIgnoreCase(authorizationHeader);
+
+        if (isValid) {
+            logger.debug("Authorization验证通过");
+        } else {
+            logger.warn("Authorization验证失败，期望MD5: {}，实际MD5: {}", expectedMd5,
+                    authorizationHeader);
+        }
+
+        return isValid;
+    }
+
+    /**
+     * 生成Authorization头值
+     * <p>
+     * 将用户名和密码用冒号拼接后计算MD5值
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return Authorization头值
+     */
+    private static String generateAuthorizationHeader(String username,
+                                                      String password) {
+        if (username == null || password == null) {
+            throw new IllegalArgumentException("用户名和密码不能为空");
+        }
+
+        String credentials = username + ":" + password;
+        return md5(credentials);
     }
 }

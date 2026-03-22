@@ -272,6 +272,7 @@ public class LvzhiDrpClient {
                                 });
                 requestBody.putAll(businessParams);
             } catch (Exception e) {
+                logger.error("序列化请求参数失败", e);
                 throw new LvzhiDrpException("序列化请求参数失败", e);
             }
         }
@@ -315,6 +316,7 @@ public class LvzhiDrpClient {
                                 });
                 requestBody.putAll(businessParams);
             } catch (Exception e) {
+                logger.error("序列化请求参数失败", e);
                 throw new LvzhiDrpException("序列化请求参数失败", e);
             }
         }
@@ -360,12 +362,15 @@ public class LvzhiDrpClient {
                 try {
                     return objectMapper.readValue(responseBody, responseType);
                 } catch (JsonProcessingException e) {
+                    logger.error("解析响应失败: " + responseBody, e);
                     throw new LvzhiDrpException("解析响应失败: " + responseBody, e);
                 }
             });
         } catch (LvzhiDrpException e) {
+            logger.error("API请求失败", e);
             throw e;
         } catch (Exception e) {
+            logger.error("API请求失败: " + e.getMessage(), e);
             throw new LvzhiDrpException("API请求失败: " + e.getMessage(), e);
         }
     }

@@ -291,6 +291,7 @@ https://your-domain.com/callback/hotelNotify
 ```java
 @RestController
 @RequestMapping("/callback")
+@Component
 public class HotelNotifyController {
     
     @Autowired
@@ -497,11 +498,13 @@ import io.github.qwzhang01.luzhi.sdk.dto.notify.HotelNotifyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/callback")
+@Component
 public class HotelNotifyController {
     
     @Autowired
@@ -520,10 +523,12 @@ public class HotelNotifyController {
 
 ```java
 import io.github.qwzhang01.luzhi.sdk.util.SignatureUtil;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/callback")
+@Component
 public class HotelNotifyController {
     
     @Autowired
@@ -906,12 +911,18 @@ mvn clean package
 - 🔄 **自动路由机制**：根据变更类型自动路由到对应的处理方法
 - 🛡️ **错误处理增强**：内置未知类型检测和错误响应机制
 - 📚 **详细文档**：添加回调功能使用指南和最佳实践
+- ⏰ **新增LocalDateTimeUtil工具类**：提供字符串与LocalDateTime之间的转换功能，支持多种常见格式
 
 #### 新增方法
 
 - `SignatureUtil.parseAuthorization()` - 解析Authorization头中的MD5加密信息
 - `SignatureUtil.validateAuthorization()` - 验证Authorization头是否有效
 - `SignatureUtil.generateAuthorizationHeader()` - 生成Authorization头值
+- `LocalDateTimeUtil.parse()` - 按指定格式解析字符串为LocalDateTime
+- `LocalDateTimeUtil.parseFlexible()` - 灵活解析，自动尝试多种格式
+- `LocalDateTimeUtil.format()` - 将LocalDateTime格式化为字符串
+- `LocalDateTimeUtil.parseISO()` / `formatISO()` - ISO格式解析和格式化
+- `LocalDateTimeUtil.parseCompact()` / `formatCompact()` - 紧凑格式解析和格式化
 
 ### v1.0.1 (2024-03-10)
 
@@ -934,3 +945,71 @@ mvn clean package
 ---
 
 **如果这个项目对你有帮助，请给个 ⭐️ Star 支持一下！**
+
+### LocalDateTimeUtil - 日期时间工具类
+
+`LocalDateTimeUtil` 提供字符串与LocalDateTime之间的转换功能，支持多种常见格式。
+
+#### 主要功能
+
+- 支持多种日期时间格式的解析和格式化
+- 提供灵活的解析方法，自动尝试多种格式
+- 支持日期字符串自动补充时间部分
+
+#### 使用示例
+
+```java
+import io.github.qwzhang01.luzhi.sdk.util.LocalDateTimeUtil;
+import java.time.LocalDateTime;
+
+public class DateTimeExample {
+    
+    public void demo() {
+        // 使用默认格式解析
+        LocalDateTime dt1 = LocalDateTimeUtil.parse("2024-03-23 14:30:00");
+        
+        // 使用指定格式解析
+        LocalDateTime dt2 = LocalDateTimeUtil.parse("2024-03-23T14:30:00", "yyyy-MM-dd'T'HH:mm:ss");
+        
+        // 使用ISO格式解析
+        LocalDateTime dt3 = LocalDateTimeUtil.parseISO("2024-03-23T14:30:00");
+        
+        // 使用紧凑格式解析
+        LocalDateTime dt4 = LocalDateTimeUtil.parseCompact("20240323143000");
+        
+        // 灵活解析，自动尝试多种格式
+        LocalDateTime dt5 = LocalDateTimeUtil.parseFlexible("2024-03-23 14:30:00");
+        LocalDateTime dt6 = LocalDateTimeUtil.parseFlexible("2024-03-23"); // 自动补充时间为00:00:00
+        
+        // 格式化输出
+        String formatted1 = LocalDateTimeUtil.format(dt1); // "2024-03-23 14:30:00"
+        String formatted2 = LocalDateTimeUtil.formatISO(dt1); // "2024-03-23T14:30:00"
+        String formatted3 = LocalDateTimeUtil.formatCompact(dt1); // "20240323143000"
+    }
+}
+```
+
+#### 支持的格式常量
+
+| 常量名 | 格式 | 说明 |
+|--------|------|------|
+| `DEFAULT_PATTERN` | yyyy-MM-dd HH:mm:ss | 默认格式 |
+| `ISO_PATTERN` | yyyy-MM-dd'T'HH:mm:ss | ISO 8601格式 |
+| `COMPACT_PATTERN` | yyyyMMddHHmmss | 紧凑格式 |
+| `DATE_PATTERN` | yyyy-MM-dd | 仅日期格式 |
+| `TIME_PATTERN` | HH:mm:ss | 仅时间格式 |
+
+#### 主要方法说明
+
+| 方法名 | 参数 | 返回值 | 说明 |
+|--------|------|--------|------|
+| `parse(String, String)` | dateTimeStr, pattern | LocalDateTime | 按指定格式解析 |
+| `parse(String)` | dateTimeStr | LocalDateTime | 按默认格式解析 |
+| `parseISO(String)` | dateTimeStr | LocalDateTime | 按ISO格式解析 |
+| `parseCompact(String)` | dateTimeStr | LocalDateTime | 按紧凑格式解析 |
+| `parseFlexible(String)` | dateTimeStr | LocalDateTime | 灵活解析，尝试多种格式 |
+| `parseDateWithTime(String)` | dateStr | LocalDateTime | 日期字符串补充时间 |
+| `format(LocalDateTime, String)` | dateTime, pattern | String | 按指定格式格式化 |
+| `format(LocalDateTime)` | dateTime | String | 按默认格式格式化 |
+| `formatISO(LocalDateTime)` | dateTime | String | 按ISO格式格式化 |
+| `formatCompact(LocalDateTime)` | dateTime | String | 按紧凑格式格式化 |

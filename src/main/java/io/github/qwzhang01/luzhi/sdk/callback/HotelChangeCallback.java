@@ -3,6 +3,9 @@ package io.github.qwzhang01.luzhi.sdk.callback;
 import io.github.qwzhang01.luzhi.sdk.dto.notify.HotelChangeType;
 import io.github.qwzhang01.luzhi.sdk.dto.notify.HotelNotifyRequest;
 import io.github.qwzhang01.luzhi.sdk.dto.notify.HotelNotifyResponse;
+import io.github.qwzhang01.luzhi.sdk.util.LocalDateTimeUtil;
+
+import java.time.LocalDateTime;
 
 /**
  * 酒店信息变更回调接口
@@ -36,14 +39,17 @@ public interface HotelChangeCallback {
         } else if (HotelChangeType.HOTEL_ONLINE.equals(type)) {
             onHotelOnline(request.getHotelVid());
         } else if (HotelChangeType.RATE.equals(type)) {
-            onRateChange(request.getHotelVid(), request.getStartDate(),
-                    request.getEndDate());
+            onRateChange(request.getHotelVid(),
+                    LocalDateTimeUtil.parseDateWithTime(request.getStartDate()),
+                    LocalDateTimeUtil.parseDateWithTime(request.getEndDate()));
         } else if (HotelChangeType.PRODUCT_ROOM_STATE.equals(type)) {
             onProductRoomStateChange(request.getHotelVid(),
-                    request.getStartDate(), request.getEndDate());
+                    LocalDateTimeUtil.parseDateWithTime(request.getStartDate()),
+                    LocalDateTimeUtil.parseDateWithTime(request.getEndDate()));
         } else if (HotelChangeType.AVAIL_ROOMS.equals(type)) {
-            onAvailRoomsChange(request.getHotelVid(), request.getStartDate(),
-                    request.getEndDate());
+            onAvailRoomsChange(request.getHotelVid(),
+                    LocalDateTimeUtil.parseDateWithTime(request.getStartDate()),
+                    LocalDateTimeUtil.parseDateWithTime(request.getEndDate()));
         }
 
         HotelNotifyResponse hotelNotifyResponse = new HotelNotifyResponse();
@@ -60,7 +66,8 @@ public interface HotelChangeCallback {
      * @param startDate 开始时间（格式：yyyy-MM-dd）
      * @param endDate   结束时间（格式：yyyy-MM-dd）
      */
-    void onAvailRoomsChange(Long hotelVid, String startDate, String endDate);
+    void onAvailRoomsChange(Long hotelVid, LocalDateTime startDate,
+                            LocalDateTime endDate);
 
     /**
      * 处理产品房态的每日开关变化
@@ -69,8 +76,8 @@ public interface HotelChangeCallback {
      * @param startDate 开始时间（格式：yyyy-MM-dd）
      * @param endDate   结束时间（格式：yyyy-MM-dd）
      */
-    void onProductRoomStateChange(Long hotelVid, String startDate,
-                                  String endDate);
+    void onProductRoomStateChange(Long hotelVid, LocalDateTime startDate,
+                                  LocalDateTime endDate);
 
     /**
      * 处理房价变化
@@ -79,7 +86,8 @@ public interface HotelChangeCallback {
      * @param startDate 开始时间（格式：yyyy-MM-dd）
      * @param endDate   结束时间（格式：yyyy-MM-dd）
      */
-    void onRateChange(Long hotelVid, String startDate, String endDate);
+    void onRateChange(Long hotelVid, LocalDateTime startDate,
+                      LocalDateTime endDate);
 
     /**
      * 处理酒店下线

@@ -78,12 +78,13 @@ implementation 'io.github.qwzhang01:seven-lvzhi-sdk-spring-boot-starter:1.2.0'
 ```yaml
 lvzhi:
   drp:
-    client-id: your-client-id           # 必填：客户端ID
-    client-secret: your-client-secret   # 必填：客户端密钥
-    secret-key: your-secret-key         # 必填：签名密钥
+    enabled: true                          # 可选：是否启用自动配置，默认true
+    client-id: your-client-id              # 必填：客户端ID
+    client-secret: your-client-secret      # 必填：客户端密钥
+    secret-key: your-secret-key            # 必填：签名密钥
     # 可选配置
     base-url: https://open.zktapi.com/drp  # API基础URL，默认生产环境
-    version: V1.0.0                     # API版本，默认V1.0.0
+    version: V1.0.0                        # API版本，默认V1.0.0
 ```
 
 #### 3. 使用服务
@@ -119,27 +120,32 @@ public class HotelBookingService {
 }
 ```
 
-### 手动配置（不推荐）
+### 手动配置（不依赖 yml 配置）
 
-如果您需要手动配置，可以使用 `LvzhiDrpManualConfiguration` 工具类：
+如果您不希望依赖 `application.yml` 配置，可以使用 `LvzhiDrpManualConfiguration` 工具类在代码中直接创建客户端：
 
 ```java
 import io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpManualConfiguration;
+import io.github.qwzhang01.luzhi.sdk.client.LvzhiDrpClient;
 
-@Service
-public class ManualConfigService {
-    
-    public void createManualClient() {
-        // 创建使用内存缓存的客户端
-        LvzhiDrpClient client = LvzhiDrpManualConfiguration.createMemoryCacheClient(
+@Configuration
+public class LvzhiConfig {
+
+    // 方式一：内存缓存（无需 Redis）
+    @Bean
+    public LvzhiDrpClient lvzhiDrpClient() {
+        return LvzhiDrpManualConfiguration.createMemoryCacheClient(
             "https://open.zktapi.com/drp",
             "your-client-id",
             "your-client-secret",
             "your-secret-key"
         );
-        
-        // 创建使用Redis缓存的客户端
-        LvzhiDrpClient redisClient = LvzhiDrpManualConfiguration.createRedisCacheClient(
+    }
+
+    // 方式二：Redis 缓存
+    @Bean
+    public LvzhiDrpClient lvzhiDrpClientWithRedis(RedisTemplate<String, Object> redisTemplate) {
+        return LvzhiDrpManualConfiguration.createRedisCacheClient(
             "https://open.zktapi.com/drp",
             "your-client-id",
             "your-client-secret",
@@ -147,10 +153,28 @@ public class ManualConfigService {
             redisTemplate
         );
     }
+
+    // 方式三：自定义 HTTP 客户端参数
+    @Bean
+    public LvzhiDrpClient lvzhiDrpClientCustomHttp() {
+        CloseableHttpClient httpClient = LvzhiDrpManualConfiguration.createCustomHttpClient(
+            200,   // maxConnTotal
+            50,    // maxConnPerRoute
+            5000,  // connectTimeout(ms)
+            30000  // readTimeout(ms)
+        );
+        return LvzhiDrpManualConfiguration.createMemoryCacheClient(
+            httpClient,
+            "https://open.zktapi.com/drp",
+            "your-client-id",
+            "your-client-secret",
+            "your-secret-key"
+        );
+    }
 }
 ```
 
-**注意：推荐使用自动配置方式，手动配置仅适用于特殊场景。**
+> **注意**：手动配置时，需要在 `application.yml` 中设置 `lvzhi.drp.enabled: false`，避免自动配置与手动配置冲突产生重复 Bean。
 
 ## 🎯 API使用示例
 
@@ -537,12 +561,16 @@ lvzhi:
 
 #### 3. 智能缓存选择策略
 
-SDK采用智能缓存选择策略：
+SDK 采用两个独立 Bean 的方式实现优雅降级，无需担心 Redis 依赖缺失导致启动失败：
 
-1. **自动检测**：启动时自动检测RedisTemplate是否存在
-2. **配置优先**：根据`redis-cache.enabled`配置决定是否启用Redis缓存
-3. **优雅降级**：Redis不可用时自动回退到内存缓存
-4. **双重检查锁**：确保线程安全，避免并发问题
+| 条件 | 生效的 Bean | 缓存策略 |
+|------|------------|----------|
+| 引入了 Redis 依赖 **且** `redis-cache.enabled=true` | `lvzhiDrpClientWithRedis` | Redis 缓存 |
+| 未引入 Redis 依赖 **或** `redis-cache.enabled=false`（默认） | `lvzhiDrpClientWithMemory` | 内存缓存（兜底） |
+
+- **无强依赖**：未引入 Redis 依赖时，不会因找不到 `RedisTemplate` 而启动失败
+- **配置优先**：通过 `redis-cache.enabled` 显式控制，不会意外启用 Redis 缓存
+- **双重检查锁**：确保线程安全，避免并发问题
 
 #### 4. 缓存键格式
 
@@ -1120,6 +1148,7 @@ public void getOrderDetail(String orderNo) {
 
 | 配置项 | 类型 | 默认值 | 说明 |
 |--------|------|--------|------|
+| `lvzhi.drp.enabled` | Boolean | `true` | 是否启用自动配置，设为 false 可完全关闭 |
 | `lvzhi.drp.base-url` | String | `https://open.zktapi.com/drp` | API 基础 URL |
 | `lvzhi.drp.client-id` | String | - | 客户端 ID（必填） |
 | `lvzhi.drp.client-secret` | String | - | 客户端密钥（必填） |

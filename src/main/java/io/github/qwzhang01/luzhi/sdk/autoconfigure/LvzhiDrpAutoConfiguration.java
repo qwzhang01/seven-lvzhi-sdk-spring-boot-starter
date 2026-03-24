@@ -82,28 +82,22 @@ public class LvzhiDrpAutoConfiguration {
     }
 
     /**
-     * 配置API客户端（使用Redis缓存）
-     */
-    @Bean
-    @ConditionalOnBean({LvzhiDrpProperties.class, RedisTemplate.class})
-    @ConditionalOnMissingBean
-    public LvzhiDrpClient lvzhiDrpClient(CloseableHttpClient lvzhiDrpHttpClient,
-                                                   LvzhiDrpProperties properties,
-                                                   RedisTemplate<String, Object> redisTemplate) {
-        logger.info("初始化旅智DRP API客户端（使用Redis缓存） - 基础URL: {}",
-                properties.getBaseUrl());
-        return new LvzhiDrpClient(lvzhiDrpHttpClient, properties, redisTemplate);
-    }
-
-    /**
-     * 配置API客户端（使用本地缓存）
+     * 配置API客户端（根据配置选择Redis缓存或内存缓存）
      */
     @Bean
     @ConditionalOnBean(LvzhiDrpProperties.class)
     @ConditionalOnMissingBean
-    public LvzhiDrpClient lvzhiDrpClient(CloseableHttpClient lvzhiDrpHttpClient, LvzhiDrpProperties properties) {
-        logger.info("初始化旅智DRP API客户端（使用本地缓存） - 基础URL: {}",
-                properties.getBaseUrl());
-        return new LvzhiDrpClient(lvzhiDrpHttpClient, properties);
+    public LvzhiDrpClient lvzhiDrpClient(CloseableHttpClient lvzhiDrpHttpClient,
+                                                   LvzhiDrpProperties properties,
+                                                   RedisTemplate<String, Object> redisTemplate) {
+        if (properties.getRedisCache().isEnabled() && redisTemplate != null) {
+            logger.info("初始化旅智DRP API客户端（使用Redis缓存） - 基础URL: {}",
+                    properties.getBaseUrl());
+            return new LvzhiDrpClient(lvzhiDrpHttpClient, properties, redisTemplate);
+        } else {
+            logger.info("初始化旅智DRP API客户端（使用内存缓存） - 基础URL: {}",
+                    properties.getBaseUrl());
+            return new LvzhiDrpClient(lvzhiDrpHttpClient, properties);
+        }
     }
 }

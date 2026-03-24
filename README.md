@@ -21,6 +21,8 @@
 - 📦 **类型安全**：提供完整的请求和响应 DTO 定义
 - 🛡️ **异常处理**：统一的异常处理机制
 - 🗄️ **Redis缓存支持**：支持Redis分布式缓存管理Token，提升多实例部署的稳定性
+- 🔄 **双缓存策略**：支持Redis缓存和内存缓存，自动根据配置选择最优方案
+- ⚡ **自动注入**：基于Spring Boot自动配置，无需手动注入即可使用所有服务
 
 ### 支持的 API 模块
 
@@ -43,7 +45,13 @@
 
 ## 🚀 快速开始
 
-### Maven 依赖
+### 自动配置（推荐）
+
+本SDK采用Spring Boot自动配置机制，只需添加依赖和配置即可自动注入所有服务组件。
+
+#### 1. 添加依赖
+
+**Maven 依赖**
 
 在 `pom.xml` 中添加依赖：
 
@@ -51,17 +59,325 @@
 <dependency>
     <groupId>io.github.qwzhang01</groupId>
     <artifactId>seven-lvzhi-sdk-spring-boot-starter</artifactId>
-    <version>1.0.1</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
-### Gradle 依赖
+**Gradle 依赖**
 
 在 `build.gradle` 中添加依赖：
 
 ```gradle
-implementation 'io.github.qwzhang01:seven-lvzhi-sdk-spring-boot-starter:1.0.1'
+implementation 'io.github.qwzhang01:seven-lvzhi-sdk-spring-boot-starter:1.2.0'
 ```
+
+#### 2. 配置参数
+
+在 `application.yml` 中配置必要的参数：
+
+```yaml
+lvzhi:
+  drp:
+    client-id: your-client-id           # 必填：客户端ID
+    client-secret: your-client-secret   # 必填：客户端密钥
+    secret-key: your-secret-key         # 必填：签名密钥
+    # 可选配置
+    base-url: https://open.zktapi.com/drp  # API基础URL，默认生产环境
+    version: V1.0.0                     # API版本，默认V1.0.0
+```
+
+#### 3. 使用服务
+
+配置完成后，SDK会自动注入所有服务组件，直接在代码中使用即可：
+
+```java
+@Service
+public class HotelBookingService {
+    
+    @Autowired
+    private HotelService hotelService;           // 酒店服务
+    
+    @Autowired
+    private ProductService productService;      // 产品服务
+    
+    @Autowired
+    private OrderService orderService;          // 订单服务
+    
+    @Autowired
+    private MemberService memberService;        // 会员服务
+    
+    public void bookHotel(Long hotelVid) {
+        // 获取酒店信息
+        BaseResponse<HotelDetailInfo> hotelResponse = hotelService.getByVid(hotelVid);
+        
+        // 获取产品列表
+        BaseResponse<ProductListResponse> productResponse = productService.list(hotelVid);
+        
+        // 自动处理Token获取和缓存
+        // SDK会自动管理Token的生命周期
+    }
+}
+```
+
+### 手动配置（不推荐）
+
+如果您需要手动配置，可以使用 `LvzhiDrpManualConfiguration` 工具类：
+
+```java
+import io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpManualConfiguration;
+
+@Service
+public class ManualConfigService {
+    
+    public void createManualClient() {
+        // 创建使用内存缓存的客户端
+        LvzhiDrpClient client = LvzhiDrpManualConfiguration.createMemoryCacheClient(
+            "https://open.zktapi.com/drp",
+            "your-client-id",
+            "your-client-secret",
+            "your-secret-key"
+        );
+        
+        // 创建使用Redis缓存的客户端
+        LvzhiDrpClient redisClient = LvzhiDrpManualConfiguration.createRedisCacheClient(
+            "https://open.zktapi.com/drp",
+            "your-client-id",
+            "your-client-secret",
+            "your-secret-key",
+            redisTemplate
+        );
+    }
+}
+```
+
+**注意：推荐使用自动配置方式，手动配置仅适用于特殊场景。**
+
+## 🎯 API使用示例
+
+### 酒店服务示例
+
+```java
+@RestController
+@RequestMapping("/api/hotels")
+public class HotelController {
+    
+    @Autowired
+    private HotelService hotelService;
+    
+    // 获取酒店列表
+    @GetMapping
+    public BaseResponse<HotelListResponse> getHotels(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return hotelService.list(page, size);
+    }
+    
+    // 获取酒店详情
+    @GetMapping("/{vid}")
+    public BaseResponse<HotelDetailInfo> getHotelDetail(@PathVariable Long vid) {
+        return hotelService.getByVid(vid);
+    }
+    
+    // 搜索酒店
+    @GetMapping("/search")
+    public BaseResponse<HotelListResponse> searchHotels(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return hotelService.search(keyword, page, size);
+    }
+}
+```
+
+### 产品服务示例
+
+```java
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+    
+    @Autowired
+    private ProductService productService;
+    
+    // 获取酒店产品列表
+    @GetMapping("/hotel/{hotelVid}")
+    public BaseResponse<ProductListResponse> getHotelProducts(@PathVariable Long hotelVid) {
+        return productService.list(hotelVid);
+    }
+    
+    // 获取产品详情
+    @GetMapping("/{productId}")
+    public BaseResponse<ProductDetailInfo> getProductDetail(@PathVariable Long productId) {
+        return productService.getDetail(productId);
+    }
+}
+```
+
+### 订单服务示例
+
+```java
+@RestController
+@RequestMapping("/api/orders")
+public class OrderController {
+    
+    @Autowired
+    private OrderService orderService;
+    
+    // 创建订单
+    @PostMapping
+    public BaseResponse<OrderCreateResponse> createOrder(@RequestBody OrderCreateRequest request) {
+        return orderService.create(request);
+    }
+    
+    // 查询订单详情
+    @GetMapping("/{orderId}")
+    public BaseResponse<OrderDetailInfo> getOrderDetail(@PathVariable String orderId) {
+        return orderService.getDetail(orderId);
+    }
+    
+    // 取消订单
+    @PostMapping("/{orderId}/cancel")
+    public BaseResponse<OrderCancelResponse> cancelOrder(
+            @PathVariable String orderId,
+            @RequestBody OrderCancelRequest request) {
+        return orderService.cancel(orderId, request);
+    }
+}
+```
+
+## 🏆 最佳实践
+
+### 1. 生产环境配置
+
+```yaml
+# application-prod.yml
+lvzhi:
+  drp:
+    client-id: ${LVZHI_CLIENT_ID}
+    client-secret: ${LVZHI_CLIENT_SECRET}
+    secret-key: ${LVZHI_SECRET_KEY}
+    base-url: https://open.zktapi.com/drp
+    version: V1.0.0
+    redis-cache:
+      enabled: true
+      key-prefix: "lvzhi:drp:token:"
+      expire-time: 86400
+
+spring:
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: 0
+    timeout: 2000
+```
+
+### 2. 开发环境配置
+
+```yaml
+# application-dev.yml
+lvzhi:
+  drp:
+    client-id: test-client-id
+    client-secret: test-client-secret
+    secret-key: test-secret-key
+    base-url: https://open-test.zktapi.com/drp
+    redis-cache:
+      enabled: false  # 开发环境使用内存缓存
+```
+
+### 3. 异常处理
+
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    
+    @ExceptionHandler(LvzhiDrpException.class)
+    public ResponseEntity<ErrorResponse> handleLvzhiException(LvzhiDrpException ex) {
+        ErrorResponse error = new ErrorResponse(
+            ex.getCode(),
+            ex.getMessage(),
+            System.currentTimeMillis()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+    
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGeneralException(Exception ex) {
+        ErrorResponse error = new ErrorResponse(
+            "SYSTEM_ERROR",
+            "系统内部错误",
+            System.currentTimeMillis()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+}
+```
+
+### 4. 性能优化建议
+
+1. **启用Redis缓存**：生产环境务必启用Redis缓存，避免Token重复获取
+2. **合理设置超时时间**：根据网络状况调整HTTP客户端超时配置
+3. **连接池优化**：根据并发量调整最大连接数和路由连接数
+4. **批量请求**：尽量使用批量接口减少API调用次数
+5. **异步处理**：对于非实时性要求高的操作使用异步调用
+
+## 🔧 故障排除
+
+### 常见问题
+
+1. **Token获取失败**
+   - 检查client-id、client-secret、secret-key配置是否正确
+   - 检查网络连接是否正常
+   - 检查Redis连接是否正常（如果启用Redis缓存）
+
+2. **API调用失败**
+   - 检查base-url配置是否正确
+   - 检查API版本是否匹配
+   - 查看错误日志获取详细错误信息
+
+3. **Redis缓存不生效**
+   - 检查Redis配置是否正确
+   - 检查`redis-cache.enabled`是否设置为true
+   - 检查RedisTemplate是否已正确配置
+
+### 日志调试
+
+启用DEBUG日志查看详细调用信息：
+
+```yaml
+logging:
+  level:
+    io.github.qwzhang01.luzhi.sdk: DEBUG
+```
+
+## 📦 版本信息
+
+- **当前版本**: 1.2.0
+- **Spring Boot兼容**: 2.7.x, 3.x
+- **Java版本**: 17+
+- **Redis支持**: Spring Data Redis 2.7+
+
+## 🤝 贡献指南
+
+欢迎提交Issue和Pull Request来完善这个SDK。
+
+## 📄 许可证
+
+本项目采用 MIT 许可证，详情请查看 LICENSE 文件。
+
+## 📞 支持
+
+如果您在使用过程中遇到问题，可以通过以下方式获取帮助：
+
+1. 查看本文档
+2. 查看示例代码
+3. 提交Issue
+4. 联系技术支持
+
+---
+
+**Happy Coding! 🎉**
 
 ### 配置文件
 
@@ -157,20 +473,121 @@ spring:
 
 ### 缓存策略说明
 
-#### 1. Redis缓存优先
+本SDK支持两种缓存策略，可根据配置自动选择最优方案：
+
+#### 1. Redis缓存（推荐用于生产环境）
+
 当检测到RedisTemplate存在且Redis缓存启用时，优先使用Redis缓存：
-- Token存储在Redis中，键格式：`lvzhi:drp:token:{clientId}`
-- 支持多实例共享Token
-- 自动处理过期和刷新
 
-#### 2. 本地缓存回退
-当Redis不可用时，自动回退到本地缓存：
-- 使用内存变量存储Token
-- 单实例内有效
-- 应用重启后需要重新获取Token
+**优势：**
+- 🗄️ **分布式支持**：多实例部署时Token共享，避免重复获取
+- 🔄 **一致性保证**：所有实例使用相同的Token，确保数据一致性
+- ⚡ **性能优化**：减少API调用，提升响应速度
+- 🛡️ **高可用性**：Redis集群支持，提升系统稳定性
 
-#### 3. 双重检查锁
-无论使用哪种缓存方式，都采用双重检查锁机制确保线程安全。
+**配置方式：**
+
+```yaml
+lvzhi:
+  drp:
+    redis-cache:
+      enabled: true                    # 启用Redis缓存
+      key-prefix: "lvzhi:drp:token:"   # 缓存键前缀
+      expire-time: 86400              # Token过期时间（秒），默认24小时
+```
+
+**Redis依赖配置：**
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
+
+**Redis连接配置：**
+
+```yaml
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    password: your-redis-password
+    database: 0
+    timeout: 2000
+```
+
+#### 2. 内存缓存（适用于开发环境或单实例部署）
+
+当Redis不可用或未启用Redis缓存时，自动回退到内存缓存：
+
+**优势：**
+- 🚀 **零配置**：无需额外依赖和配置
+- 💾 **轻量级**：不依赖外部服务，部署简单
+- ⚡ **高性能**：内存访问速度快
+
+**配置方式：**
+
+```yaml
+lvzhi:
+  drp:
+    redis-cache:
+      enabled: false                   # 禁用Redis缓存，使用内存缓存
+```
+
+#### 3. 智能缓存选择策略
+
+SDK采用智能缓存选择策略：
+
+1. **自动检测**：启动时自动检测RedisTemplate是否存在
+2. **配置优先**：根据`redis-cache.enabled`配置决定是否启用Redis缓存
+3. **优雅降级**：Redis不可用时自动回退到内存缓存
+4. **双重检查锁**：确保线程安全，避免并发问题
+
+#### 4. 缓存键格式
+
+**Redis缓存键格式：**
+```
+lvzhi:drp:token:{clientId}
+```
+
+例如，clientId为`test-app`时，缓存键为：
+```
+lvzhi:drp:token:test-app
+```
+
+#### 5. 手动缓存管理
+
+```java
+@Service
+public class CacheManagementService {
+    
+    @Autowired
+    private LvzhiDrpClient lvzhiDrpClient;
+    
+    public void forceRefreshToken() {
+        // 强制清除缓存，下次请求会重新获取Token
+        lvzhiDrpClient.clearTokenCache();
+    }
+    
+    public void refreshToken() {
+        // 手动刷新Token
+        lvzhiDrpClient.refreshToken();
+    }
+}
+```
+
+#### 6. 缓存监控
+
+SDK内置缓存监控功能，可通过日志查看缓存状态：
+
+```log
+# 启用Redis缓存时
+INFO  - 初始化旅智DRP API客户端（使用Redis缓存） - 基础URL: https://open.zktapi.com/drp
+
+# 使用内存缓存时
+INFO  - 初始化旅智DRP API客户端（使用内存缓存） - 基础URL: https://open.zktapi.com/drp
+```
 
 ### 使用示例
 

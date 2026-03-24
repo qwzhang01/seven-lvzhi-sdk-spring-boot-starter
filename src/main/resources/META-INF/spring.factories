@@ -1,3 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpAutoConfiguration
+io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpAutoConfiguration,\
+io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpServiceAutoConfiguration

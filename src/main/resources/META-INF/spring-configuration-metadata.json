@@ -11,6 +11,12 @@
       "type": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$HttpClientProperties",
       "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
       "description": "HTTP客户端配置"
+    },
+    {
+      "name": "lvzhi.drp.redis-cache",
+      "type": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$RedisCacheProperties",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "description": "Redis缓存配置"
     }
   ],
   "properties": [
@@ -80,6 +86,27 @@
       "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$HttpClientProperties",
       "defaultValue": 5000,
       "description": "连接请求超时时间（毫秒）"
+    },
+    {
+      "name": "lvzhi.drp.redis-cache.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$RedisCacheProperties",
+      "defaultValue": false,
+      "description": "是否启用Redis缓存"
+    },
+    {
+      "name": "lvzhi.drp.redis-cache.key-prefix",
+      "type": "java.lang.String",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$RedisCacheProperties",
+      "defaultValue": "lvzhi:drp:token:",
+      "description": "Redis缓存键前缀"
+    },
+    {
+      "name": "lvzhi.drp.redis-cache.expire-time",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties$RedisCacheProperties",
+      "defaultValue": 86400,
+      "description": "Token缓存过期时间（秒），默认24小时"
     }
   ],
   "hints": [

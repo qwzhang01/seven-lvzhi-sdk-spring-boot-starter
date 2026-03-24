@@ -21,6 +21,13 @@
   ],
   "properties": [
     {
+      "name": "lvzhi.drp.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
+      "defaultValue": true,
+      "description": "是否启用旅智DRP自动配置，默认true"
+    },
+    {
       "name": "lvzhi.drp.base-url",
       "type": "java.lang.String",
       "sourceType": "io.github.qwzhang01.luzhi.sdk.autoconfigure.LvzhiDrpProperties",
